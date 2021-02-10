@@ -90,12 +90,31 @@ function list() {
   return todoRepo.find();
 }
 
+/**
+ * truncate database
+ * @returns {Promise<boolean>} boolean
+ */
+async function truncate() {
+  const entities = getConnection().entityMetadatas;
+
+  for (const entity of entities) {
+    const repository = await getConnection().getRepository(entity.name); // Get repository
+    try {
+      await repository.clear(); // Clear each entity table's content
+    } catch (error) {
+      return false;
+    }
+  }
+  return true;
+}
+
 module.exports = {
   add,
   remove,
   done,
   undone,
   list,
+  truncate,
   ERROR_ADD_DATA_INVALID,
   ERROR_TODO_NOT_FOUND,
 };
