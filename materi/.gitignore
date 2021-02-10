@@ -1,0 +1,7 @@
+node_modules
+.nyc_output
+*.db
+file-storage
+docs
+.todorc
+.env

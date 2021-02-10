@@ -1,0 +1,35 @@
+{
+  "name": "webserver",
+  "version": "1.0.0",
+  "description": "todo webserver",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon service/main.js",
+    "lint": "eslint .",
+    "docs:svc": "jsdoc -c service/docs.json"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "css-loader": "^5.0.1",
+    "eslint": "^7.19.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "jsdoc": "^3.6.6",
+    "json-loader": "^0.5.7",
+    "livereload": "^0.9.1",
+    "prettier": "^2.2.1",
+    "style-loader": "^2.0.0",
+    "yaml-loader": "^0.6.0"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.5.0",
+    "nodemon": "^2.0.7",
+    "pg": "^8.5.1",
+    "rc": "^1.2.8",
+    "redux-thunk": "^2.3.0",
+    "rxjs": "^6.6.3",
+    "swagger-ui": "^3.42.0",
+    "typeorm": "^0.2.30"
+  }
+}
