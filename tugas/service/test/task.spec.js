@@ -5,49 +5,40 @@ const server = require('../tasks/server');
 const fetch = require('node-fetch');
 const { truncate } = require('../tasks/task');
 const nock = require('nock');
+const { WorkerSchema, Worker } = require('../worker/worker.model');
 
 describe('task', () => {
   let connection;
-  beforeAll(async () => {
-    connection = await connect([TaskSchema], config.database);
+  beforeEach(async () => {
+    connection = await connect([TaskSchema, WorkerSchema], config.database);
+    const workerRepo = connection.getRepository('Worker');
+    const worker = new Worker(
+      null,
+      'Hadi',
+      30,
+      'pedagang',
+      'temanggung',
+      'hadi.jpg'
+    );
+    await workerRepo.save(worker);
+    const taskRepo = connection.getRepository('Task');
+    await taskRepo.save({
+      job: 'makan',
+      assignee: { id: 1 },
+      attachment: 'attachmen.jpg',
+    });
     server.run();
   });
-  beforeEach(async () => {
-    nock('http://localhost:7001')
-      .get('/info?id=1')
-      .reply(200, [
-        {
-          id: 1,
-          name: 'Hadi',
-          age: 31,
-          bio: 'pedagang',
-          address: 'temanggung',
-          photo: 'hadi.jpg',
-        }
-      ]);
-
-    await truncate();
-    await fetch('http://localhost:7002/add', {
-      method: 'post',
-      body: JSON.stringify({
-        job: 'makan',
-        assigneeId: 1,
-        attachment: 'gambar.jpg',
-      }),
-      headers: { 'Content-type': 'application/json' },
-    });
-  });
-  afterAll(async () => {
+  afterEach(async () => {
     await truncate();
     await connection.close();
     server.stop();
   });
-  it('get list', async () => {
+  it('coba', async () => {
     const res = await fetch('http://localhost:7002/list', {
       method: 'get',
-      headers: { 'Content-type': 'application/json' },
     });
     const response = await res.json();
-    expect(response).toHaveLength(1);
+    expect(response.length).toEqual(1);
   });
 });
