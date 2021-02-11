@@ -5,6 +5,7 @@ const { config } = require('../config');
 const server = require('../server');
 const fetch = require('node-fetch');
 const { truncate } = require('../todo');
+const nock = require('nock');
 
 describe('todos', () => {
   let connection;
@@ -65,6 +66,31 @@ describe('todos', () => {
       });
       const response = await res.json();
       expect(response.done).toBeTruthy();
+    });
+
+    it('get list with nock', async () => {
+      nock('http://localhost:7767')
+        .get('/list')
+        .reply(200, [
+          {
+            id: 1,
+            task: 'makan',
+            done: true,
+          },
+          {
+            id: 2,
+            task: 'minum',
+            done: false,
+          },
+        ]);
+
+      const res = await fetch('http://localhost:7767/list', {
+        method: 'get',
+        headers: { 'Content-type': 'application/json' },
+      });
+      const response = await res.json();
+      expect(response).toHaveLength(2);
+      expect(response[0].done).toBeTruthy();
     });
   });
 });
