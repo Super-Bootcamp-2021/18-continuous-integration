@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "worker:test": "jest service/test/worker.spec.js",
+    "task:test": "jest service/test/tasks.spec.js",
     "svc:start": "node .",
     "svc:dev": "nodemon .",
     "lint": "eslint .",
