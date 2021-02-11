@@ -1,4 +1,4 @@
-module.exports = {
-  verbose: true,
-  testRegex: '(/__tests_/.*|\\.(spec))\\.(js)$',
-};
+// module.exports = {
+//   verbose: true,
+//   testRegex: '(/__tests_/.*|\\.(spec))\\.(js)$',
+// };
