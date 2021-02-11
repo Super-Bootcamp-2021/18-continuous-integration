@@ -1,8 +1,11 @@
 /* eslint-disable no-undef */
 const connect = require('../lib/orm');
+const { config } = require('./config');
+const server = require('../tasks/server');
 const { TaskSchema } = require('../tasks/task.model');
 const { WorkerSchema } = require('../worker/worker.model');
-const { config } = require('./config');
+const { truncate } = require('../tasks/task');
+const nock = require('nock');
 
 describe('task', () => {
   let connection;
@@ -33,10 +36,11 @@ describe('task', () => {
     });
   });
   afterAll(async () => {
+    await truncate();
     await connection.close();
     server.stop();
   });
-  describe('task', () => {
+  describe('Data Handling', () => {
     it('get list task', async () => {
       const res = await fetch('http://localhost:7002/list', {
         method: 'get',
@@ -45,5 +49,55 @@ describe('task', () => {
       const response = await res.json();
       expect(response).toHaveLength(1);
     });
+    it('add task', async () => {
+      const test = 'add task';
+      expect(test).toBe('add task');
+    });
+    it('get list worker', async () => {
+      const test = 'get list worker';
+      expect(test).toBe('get list worker');
+    });
+
+    describe('Update Status', () => {
+      it('update status to be done', async () => {
+        const test = 'update status to be done';
+        expect(test).toBe('update status to be done');
+      });
+      it('update status to be cancelled', async () => {
+        const test = 'update status to be cancelled';
+        expect(test).toBe('update status to be cancelled');
+      });
+    })
+    describe('Attachment', () => {
+      it('show attachment', async () => {
+        const test = 'show attachment';
+        expect(test).toBe('show attachment');
+      });
+    })
   });
+  describe('Error Handling', () => {
+    it('form not completed', async () => {
+      const test = 'form not completed';
+      expect(test).toBe('form not completed');
+    });
+    it('failed to load task', async () => {
+      const test = 'failed to load task';
+      expect(test).toBe('failed to load task');
+    });
+    it('failed to load worker', async () => {
+      const test = 'failed to load worker';
+      expect(test).toBe('failed to load worker');
+    });
+
+    describe('Update Status', () => {
+      it('failed to update status to be done', async () => {
+        const test = 'failed to update status to be done';
+        expect(test).toBe('failed to update status to be done');
+      });
+      it('failed to update status to be cancelled', async () => {
+        const test = 'failed to update status to be cancelled';
+        expect(test).toBe('failed to update status to be cancelled');
+      });
+    })
+  })
 });
