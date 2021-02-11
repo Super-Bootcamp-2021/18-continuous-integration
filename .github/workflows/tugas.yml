@@ -9,7 +9,27 @@ on:
 
 jobs:
   build:
+    services:
+      postgres:
+        image: postgres:11
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     runs-on: ubuntu-latest
+    env:
+      tm_database__password: ${{ secrets.POSTGRES_PASSWORD }}
+      tm_database__database: ${{ secrets.POSTGRES_DB }}
+      tm_server__workerPort: ${{ secrets.WORKER_PORT }}
+      tm_server__taskPort: ${{ secrets.WORKER_PORT }}
+      tm_server__performancePort: ${{ secrets.WORKER_PORT }}
     defaults:
       run:
         working-directory: ./tugas
