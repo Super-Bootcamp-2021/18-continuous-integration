@@ -51,5 +51,20 @@ describe('todos', () => {
       const response = await res.json();
       expect(response).toHaveLength(1);
     });
+
+    it('done todo', async () => {
+      const get = await fetch('http://localhost:7767/list', {
+        method: 'get',
+        headers: { 'Content-type': 'application/json' },
+      });
+      const lists = await get.json();
+
+      const res = await fetch(`http://localhost:7767/done?id=${lists[0].id}`, {
+        method: 'put',
+        headers: { 'Content-type': 'application/json' },
+      });
+      const response = await res.json();
+      expect(response.done).toBeTruthy();
+    });
   });
 });
