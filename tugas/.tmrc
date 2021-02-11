@@ -3,9 +3,9 @@
     "type": "postgres",
     "host": "localhost",
     "port": 5432,
-    "username": "postgres",
-    "password": "",
-    "database": "database"
+    "username": "z3r",
+    "password": "Z3r",
+    "database": "taskmanager"
   },
   "server": {
     "workerPort": 7001,
@@ -16,7 +16,7 @@
     "endPoint": "127.0.0.1",
     "port": 9000,
     "useSSL": false,
-    "accessKey": "local-minio",
-    "secretKey": "local-test-secret"
+    "accessKey": "admin",
+    "secretKey": "password"
   }
 }

@@ -1,7 +1,8 @@
 /* eslint-disable no-undef */
-const connect = require('../lib/orm');
-const { config } = require('./config');
-const server = require('../tasks/server');
+const { connect } = require('../lib/orm');
+const { config } = require('../config');
+const taskServer = require('../tasks/server');
+const workerServer = require('../worker/server');
 const { TaskSchema } = require('../tasks/task.model');
 const { WorkerSchema } = require('../worker/worker.model');
 const { truncate } = require('../tasks/task');
@@ -11,34 +12,36 @@ describe('task', () => {
   let connection;
   beforeAll(async () => {
     connection = await connect([WorkerSchema, TaskSchema], config.database);
-    server.run();
+    taskServer.run();
+    workerServer.run();
   });
-  beforeEach(async () => {
-    await fetch('http://localhost:7001/add', {
-      method: 'post',
-      body: JSON.stringify({
-        name: 'Budi',
-        age: 21,
-        bio: 'saya cowok',
-        address: 'Jl Kesayangan 1',
-        photo: '123.jpg',
-      }),
-      headers: { 'Content-type': 'application/json' },
-    });
-    await fetch('http://localhost:7002/add', {
-      method: 'post',
-      body: JSON.stringify({
-        job: 'Makan',
-        attachment: 'makan.txt',
-        assignee: 1,
-      }),
-      headers: { 'Content-type': 'application/json' },
-    });
-  });
+  // beforeEach(async () => {
+  //   await fetch('http://localhost:7001/add', {
+  //     method: 'post',
+  //     body: JSON.stringify({
+  //       name: 'Budi',
+  //       age: 21,
+  //       bio: 'saya cowok',
+  //       address: 'Jl Kesayangan 1',
+  //       photo: '123.jpg',
+  //     }),
+  //     headers: { 'Content-type': 'application/json' },
+  //   });
+  //   await fetch('http://localhost:7002/add', {
+  //     method: 'post',
+  //     body: JSON.stringify({
+  //       job: 'Makan',
+  //       attachment: 'makan.txt',
+  //       assignee: 1,
+  //     }),
+  //     headers: { 'Content-type': 'application/json' },
+  //   });
+  // });
   afterAll(async () => {
     await truncate();
     await connection.close();
-    server.stop();
+    taskServer.stop();
+    workerServer.stop();
   });
   describe('Data Handling', () => {
     it('get list task', async () => {
@@ -49,7 +52,7 @@ describe('task', () => {
       const response = await res.json();
       expect(response).toHaveLength(1);
     });
-    it('add task', async () => {
+    it.only('add task', async () => {
       const test = 'add task';
       expect(test).toBe('add task');
     });
