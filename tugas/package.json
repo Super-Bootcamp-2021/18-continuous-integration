@@ -7,6 +7,8 @@
     "start": "node .",
     "dev": "nodemon .",
     "test": "jest",
+    "test:worker": "jest -- worker",
+    "test:tasks": "jest -- tasks",
     "lint": "eslint .",
     "docs": "jsdoc -c service/docs.json"
   },
@@ -29,7 +31,9 @@
     "node-fetch": "^2.6.1"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^1.5.0",
     "busboy": "^0.3.1",
+    "form-data": "^3.0.0",
     "mariadb": "^2.5.2",
     "mime-types": "^2.1.28",
     "minio": "^7.0.18",
@@ -37,13 +41,12 @@
     "nats": "^1.4.12",
     "nodemon": "^2.0.7",
     "pg": "^8.5.1",
-    "rc": "^1.2.8",
-    "swagger-ui": "^3.42.0",
     "pg-hstore": "^2.3.3",
+    "rc": "^1.2.8",
     "redis": "^3.0.2",
-    "@reduxjs/toolkit": "^1.5.0",
-    "rxjs": "^6.6.3",
     "redux-thunk": "^2.3.0",
+    "rxjs": "^6.6.3",
+    "swagger-ui": "^3.42.0",
     "typeorm": "^0.2.30"
   }
 }
