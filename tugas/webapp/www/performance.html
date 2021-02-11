@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Manager</title>
+  </head>
+  <body>
+    <ul>
+      <li><a href="worker.html">pekerja</a></li>
+      <li><a href="tasks.html">pekerjaan</a></li>
+      <li><a href="performance.html">kinerja</a></li>
+    </ul>
+    <hr />
+    <p id="error-text" class="error"></p>
+    <p id="loading-text" class="primary">memuat...</p>
+    <button id="refresh">refresh</button>
+    <ul>
+      <li>jumlah pekerja: <span id="workers"></span></li>
+      <li>jumlah tugas: <span id="tasks"></span></li>
+      <li>yang selesai: <span id="task-done"></span></li>
+      <li>yang diabtalkan: <span id="task-canceled"></span></li>
+    </ul>
+  </body>
+  <script type="text/javascript" src="performance.js"></script>
+</html>
