@@ -80,7 +80,7 @@ jobs:
           - 4222:4222
       minio:
         # Docker Hub image
-        image: minio
+        image: minio-service
         env:
           MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET }}
           MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS }}
