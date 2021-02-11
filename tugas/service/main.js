@@ -25,36 +25,36 @@ async function init() {
     console.error('database connection failed');
     process.exit(1);
   }
-  try {
-    console.log('connect to object storage');
-    await storage.connect('task-manager', {
-      endPoint: config.objectStorage.endPoint,
-      port: config.objectStorage.port,
-      useSSL: config.objectStorage.useSSL,
-      accessKey: config.objectStorage.accessKey,
-      secretKey: config.objectStorage.secretKey,
-    });
-    console.log('object storage connected');
-  } catch (err) {
-    console.error('object storage connection failed');
-    process.exit(1);
-  }
-  try {
-    console.log('connect to message bus');
-    await bus.connect();
-    console.log('message bus connected');
-  } catch (err) {
-    console.error('message bus connection failed');
-    process.exit(1);
-  }
-  try {
-    console.log('connect to key value store');
-    await kv.connect();
-    console.log('key value store connected');
-  } catch (err) {
-    console.error('key value store connection failed');
-    process.exit(1);
-  }
+  // try {
+  //   console.log('connect to object storage');
+  //   await storage.connect('task-manager', {
+  //     endPoint: config.objectStorage.endPoint,
+  //     port: config.objectStorage.port,
+  //     useSSL: config.objectStorage.useSSL,
+  //     accessKey: config.objectStorage.accessKey,
+  //     secretKey: config.objectStorage.secretKey,
+  //   });
+  //   console.log('object storage connected');
+  // } catch (err) {
+  //   console.error('object storage connection failed');
+  //   process.exit(1);
+  // }
+  // try {
+  //   console.log('connect to message bus');
+  //   await bus.connect();
+  //   console.log('message bus connected');
+  // } catch (err) {
+  //   console.error('message bus connection failed');
+  //   process.exit(1);
+  // }
+  // try {
+  //   console.log('connect to key value store');
+  //   await kv.connect();
+  //   console.log('key value store connected');
+  // } catch (err) {
+  //   console.error('key value store connection failed');
+  //   process.exit(1);
+  // }
 }
 
 async function onStop() {

@@ -56,12 +56,26 @@ function list() {
   const taskRepo = getConnection().getRepository('Task');
   return taskRepo.find({ relations: ['assignee'] });
 }
+async function truncate() {
+  const entities = getConnection().entityMetadatas;
+
+  for (const entity of entities) {
+    const repository = await getConnection().getRepository(entity.name); // Get repository
+    try {
+      await repository.clear(); // Clear each entity table's content
+    } catch (error) {
+      return false;
+    }
+  }
+  return true;
+}
 
 module.exports = {
   add,
   done,
   cancel,
   list,
+  truncate,
   ERROR_TASK_DATA_INVALID,
   ERROR_TASK_NOT_FOUND,
 };
