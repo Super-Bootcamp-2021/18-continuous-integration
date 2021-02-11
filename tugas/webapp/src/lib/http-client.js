@@ -2,8 +2,8 @@
 
 /**
  * http-client - to set format and how the data is transmitted
- * @param {any} endpoint 
- * @param {object} json data-structure 
+ * @param {any} endpoint
+ * @param {object} json data-structure
  * @returns {Promise} data
  */
 async function client(endpoint, json, { method, body, ...customConf } = {}) {
@@ -49,7 +49,7 @@ async function client(endpoint, json, { method, body, ...customConf } = {}) {
 
 /**
  * use get method for client module
- * @param {any} endpoint 
+ * @param {any} endpoint
  * @param {array} customConf
  * @returns {any} data
  */
@@ -59,7 +59,7 @@ client.get = (endpoint, customConf = {}) => {
 
 /**
  * use post method for client module
- * @param {any} endpoint 
+ * @param {any} endpoint
  * @param {array} customConf
  * @param {any} body
  * @param {object} json
@@ -69,10 +69,9 @@ client.post = (endpoint, body, json, customConf = {}) => {
   return client(endpoint, json, { method: 'POST', body, ...customConf });
 };
 
-
 /**
  * use putt method for client module
- * @param {any} endpoint 
+ * @param {any} endpoint
  * @param {array} customConf
  * @param {any} body
  * @param {object} json
@@ -82,10 +81,9 @@ client.put = (endpoint, body, json, customConf = {}) => {
   return client(endpoint, json, { method: 'PUT', body, ...customConf });
 };
 
-
 /**
  * use del method for client module
- * @param {any} endpoint 
+ * @param {any} endpoint
  * @param {array} customConf
  * @param {any} body
  * @param {object} json

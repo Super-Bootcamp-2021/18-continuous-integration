@@ -9,7 +9,7 @@ const { WORKER_SERVICE_BASEURL } = require('../config');
 /**
  * to get list worker
  * @module worker.client
- * @returns {any} data 
+ * @returns {any} data
  */
 function list() {
   return client.get(`${WORKER_SERVICE_BASEURL}/list`);
