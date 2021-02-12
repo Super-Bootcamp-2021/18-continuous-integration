@@ -64,6 +64,7 @@ async function truncate() {
     try {
       await repository.delete(() => {}); // Clear each entity table's content
     } catch (error) {
+      console.log(error);
       return false;
     }
   }

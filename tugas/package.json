@@ -7,7 +7,7 @@
     "start": "node .",
     "dev": "nodemon .",
     "test:worker": "jest -- worker",
-    "test:task": "jest -- task",
+    "test:task": "jest -- task ",
     "test": "jest",
     "lint": "eslint .",
     "docs": "jsdoc -c service/docs.json"

@@ -5,6 +5,7 @@ const bus = require('../lib/bus');
 const { WorkerSchema } = require('../worker/worker.model');
 const { TaskSchema } = require('../tasks/task.model');
 const workerServer = require('../worker/server');
+const taskServer = require('../tasks/server');
 const FormData = require('form-data');
 const fs = require('fs');
 const { truncate } = require('../tasks/task');
@@ -40,8 +41,45 @@ function request(options, form = null) {
     }
   });
 }
+async function initWorkerDB() {
+  const form = new FormData();
+  form.append('name', 'user 1');
+  form.append('age', 29);
+  form.append('bio', 'test');
+  form.append('address', 'jkt');
+  form.append('photo', fs.createReadStream('service/test/gambar/contoh.jpg'));
 
-describe('worker', () => {
+  await new Promise((resolve, reject) => {
+    form.submit('http://localhost:7001/register', function (err, res) {
+      if (err) {
+        reject(err);
+      }
+      let data = '';
+      res.on('data', (chunk) => {
+        data += chunk.toString();
+      });
+      res.on('end', () => {
+        resolve(data);
+      });
+    });
+  });
+}
+
+async function findIdWorker() {
+  const options = {
+    hostname: 'localhost',
+    port: 7001,
+    path: '/list',
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const response = await request(options);
+  return JSON.parse(response)[0].id;
+}
+describe('Task', () => {
   let connection;
   beforeAll(async () => {
     try {
@@ -73,23 +111,27 @@ describe('worker', () => {
     } catch (err) {
       console.error('message bus connection failed');
     }
+
+    taskServer.run();
     workerServer.run();
   });
   beforeEach(async () => {
     await truncate();
+    await initWorkerDB();
   });
   afterAll(async () => {
     await truncate();
     await connection.close();
     bus.close();
+    taskServer.stop();
     workerServer.stop();
   });
 
-  describe('worker', () => {
-    it('get worker', async () => {
+  describe('task', () => {
+    it('get task', async () => {
       const options = {
         hostname: 'localhost',
-        port: 7001,
+        port: 7002,
         path: '/list',
         method: 'GET',
         headers: {
@@ -102,19 +144,19 @@ describe('worker', () => {
       expect(JSON.parse(data)).toHaveLength(0);
     });
 
-    it('add worker', async () => {
+    it('add task', async () => {
+      const idWorker = await findIdWorker();
+      console.log(idWorker);
       const form = new FormData();
-      form.append('name', 'user 1');
-      form.append('age', 29);
-      form.append('bio', 'test');
-      form.append('address', 'jkt');
+      form.append('job', 'main bola');
+      form.append('assignee_id', idWorker);
       form.append(
-        'photo',
+        'attachment',
         fs.createReadStream('service/test/gambar/contoh.jpg')
       );
 
       const response = await new Promise((resolve, reject) => {
-        form.submit('http://localhost:7001/register', function (err, res) {
+        form.submit('http://localhost:7002/add', function (err, res) {
           if (err) {
             reject(err);
           }
@@ -128,8 +170,8 @@ describe('worker', () => {
         });
       });
 
-      const data = JSON.parse(response);
-      expect(data.name).toBe('user 1');
+      // const data = JSON.parse(response);
+      expect(JSON.parse(response).job).toBe('main bola');
     });
   });
 });
