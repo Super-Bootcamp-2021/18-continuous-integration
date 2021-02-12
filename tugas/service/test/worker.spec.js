@@ -69,8 +69,8 @@ describe('Worker Service', () => {
         endPoint: '127.0.0.1',
         port: 9000,
         useSSL: false,
-        accessKey: 'admin',
-        secretKey: 'password',
+        accessKey: 'minioadmin',
+        secretKey: 'minioadmin',
       });
     } catch (err) {
       console.error('object storage connection failed');
