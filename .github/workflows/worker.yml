@@ -44,8 +44,7 @@ jobs:
         ports:
           - '1111:1111'
         volumes:
-          - ${{ github.workspace }}/data:/webapp
-        options: --name=minio --health-cmd "curl http://localhost:1111/minio/health/live"
+          - ${{ github.workspace }}/data:/webapp        
           
     runs-on: ubuntu-latest
     env:
