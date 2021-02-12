@@ -94,6 +94,7 @@ jobs:
         working-directory: ./tugas
     needs: build
     steps:
+    - uses: actions/checkout@v2
     - name: Run Integration Test
       run: npm run worker:test
       
@@ -144,5 +145,6 @@ jobs:
         working-directory: ./tugas
     needs: build
     steps:
+    - uses: actions/checkout@v2
     - name: Run Integration Test
       run: npm run task:test
