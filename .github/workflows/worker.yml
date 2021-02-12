@@ -18,6 +18,10 @@ jobs:
           MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
         ports:
           - 9000:9000
+      nats:
+        image: nats
+        ports:
+          - 4222:4222
       postgres:
         image: postgres:11
         env:
