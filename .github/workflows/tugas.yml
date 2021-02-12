@@ -51,7 +51,6 @@ jobs:
         ports:
           - 4222:4222
       minio:
-        minio:
         image: lazybit/minio
         ports:
           - 9000:9000
@@ -124,7 +123,6 @@ jobs:
         ports:
           - 4222:4222
       minio:
-        minio:
         image: lazybit/minio
         ports:
           - 9000:9000
