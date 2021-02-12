@@ -46,7 +46,10 @@ describe('worker', () => {
   let connection;
   beforeAll(async () => {
     try {
-      connection = await orm.connect([WorkerSchema, TaskSchema], config.database);
+      connection = await orm.connect(
+        [WorkerSchema, TaskSchema],
+        config.database
+      );
     } catch (err) {
       console.error('database connection failed');
     }
@@ -98,18 +101,21 @@ describe('worker', () => {
       form.append('photo', fs.createReadStream('assets/nats.png'));
 
       const response = await new Promise((resolve, reject) => {
-        form.submit(`http://localhost:${config.serverWorker}/register`, function (err, res) {
-          if (err) {
-            reject(err);
+        form.submit(
+          `http://localhost:${config.serverWorker}/register`,
+          function (err, res) {
+            if (err) {
+              reject(err);
+            }
+            let data = '';
+            res.on('data', (chunk) => {
+              data += chunk.toString();
+            });
+            res.on('end', () => {
+              resolve(data);
+            });
           }
-          let data = '';
-          res.on('data', (chunk) => {
-            data += chunk.toString();
-          });
-          res.on('end', () => {
-            resolve(data);
-          });
-        });
+        );
       });
 
       const data = JSON.parse(response);
