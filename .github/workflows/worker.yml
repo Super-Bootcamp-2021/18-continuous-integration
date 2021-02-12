@@ -7,16 +7,14 @@ jobs:
     # Service containers to run with `container-job`
     services:
       # Label used to access the service container
-      mariadb:
-        image: mariadb:latest
-        ports:
-          - 3306
+      mysql:
+        image: mariadb:10.4
         env:
-          MYSQL_USER: root
-          MYSQL_PASSWORD: 
-          MYSQL_DATABASE: dubnium
           MYSQL_ROOT_PASSWORD: 
-        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+          MYSQL_DATABASE: dubnium
+        ports:
+          - 3306/tcp
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=10s --health-retries=10
       minio:
         image: bitnami/minio:latest
         env:
