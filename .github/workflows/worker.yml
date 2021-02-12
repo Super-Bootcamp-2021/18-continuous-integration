@@ -10,10 +10,10 @@ jobs:
       mysql:
         image: mysql:5.7
         env:
-          MYSQL_ROOT_PASSWORD: password
+          MYSQL_ROOT_PASSWORD: mysql123
           MYSQL_DATABASE: dubnium
         ports:
-          - 13306:3306
+          - 13306:3306/tcp
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=10s --health-retries=10
       minio:
         image: bitnami/minio:latest
