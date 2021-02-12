@@ -4,7 +4,8 @@
   "description": "sample service mesh implementation",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test:worker": "jest -- worker",
+    "test:tasks": "jest -- tasks",
     "svc:start": "node .",
     "svc:dev": "nodemon .",
     "lint": "eslint .",
@@ -18,6 +19,7 @@
     "eslint": "^7.19.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-prettier": "^3.3.1",
+    "form-data": "^3.0.0",
     "jest": "^26.6.3",
     "nock": "^13.0.7",
     "node-fetch": "^2.6.1",

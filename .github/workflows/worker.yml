@@ -1,11 +1,8 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+name: worker
 
-name: Node.js CI
-
-on:
+on: 
   push:
-    branches: [master]
+    branches: [ worker ]
 
 jobs:
   build:
@@ -19,10 +16,10 @@ jobs:
         env:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-        # Set health checks to wait until postgres has started
+        # Set health checks to wait until postgress has started
         options: >-
           --health-cmd pg_isready
-          --health-interval 10s
+          --health-interval 10s         
           --health-timeout 5s
           --health-retries 5
         ports:
@@ -31,17 +28,16 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ## add secret on settings-secret-add new secret e.g name=POSTGRES_PASSWORD value=mypassword
-      todo_database__password: ${{ secrets.POSTGRES_PASSWORD }}
-      todo_database__database: ${{ secrets.POSTGRES_DB }}
-      todo_server__port: 7767
+      sanbercode2_database__password: ${{ secrets.POSTGRES_PASSWORD }}
+      sanbercode2_database__database: ${{ secrets.POSTGRES_DB }}
     defaults:
       run:
-        working-directory: ./materi
+        working-directory: ./tugas
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 12
         uses: actions/setup-node@v1
-        with:
+        with: 
           node-version: 12
       - name: Cache node modules
         uses: actions/cache@v2
@@ -52,8 +48,8 @@ jobs:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-${{ env.cache-name }}
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-      - run: npm i
+      - run: npm install
       - run: npm test
