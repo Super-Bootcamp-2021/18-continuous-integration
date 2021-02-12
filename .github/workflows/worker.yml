@@ -44,7 +44,7 @@ jobs:
         ports:
           - '1111:1111'
         volumes:
-          - ${{ github.workspace }}/data:/webapp        
+          - ${{ github.workspace }}/data:/photo        
           
     runs-on: ubuntu-latest
     env:
@@ -58,6 +58,7 @@ jobs:
       REDIS_PORT: 6379
       MINIO_ACCESS_KEY: 'minio'
       MINIO_SECRET_KEY: '12345678'
+      MINIO_DEFAULT_BUCKETS: photo:policy, attachment
       
     defaults:
       run:
