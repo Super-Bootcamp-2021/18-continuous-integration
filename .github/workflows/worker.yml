@@ -24,22 +24,26 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-      minio:
-        image: lazybit/minio        
-        env:
-          MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
-          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
-        volumes:
-          - ${{ github.workspace }}/data:/data
-        options: --name=minio --health-cmd "curl http://localhost:9000/minio/health/live"
-        ports:
-          - 9000:9000
+      redis:
+        # Docker Hub image
+        image: redis
+        # Set health checks to wait until redis has started
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     runs-on: ubuntu-latest
     env:
       ## add secret on settings-secret-add new secret e.g name=POSTGRES_PASSWORD value=mypassword
       sanbercode2_database__password: ${{ secrets.POSTGRES_PASSWORD }}
       sanbercode2_database__database: ${{ secrets.POSTGRES_DB }}
+      # The hostname used to communicate with the Redis service container
+      REDIS_HOST: redis
+      # The default Redis port
+      REDIS_PORT: 6379
+      
     defaults:
       run:
         working-directory: ./tugas
