@@ -54,11 +54,11 @@ describe('Worker Service', () => {
   beforeAll(async () => {
     try {
       connection = await orm.connect([WorkerSchema], {
-        type: 'mysql',
+        type: 'mariadb',
         host: 'localhost',
         port: 3306,
         username: 'root',
-        password: 'password',
+        password: 'mysql123',
         database: 'dubnium',
       });
     } catch (err) {
