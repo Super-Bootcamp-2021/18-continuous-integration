@@ -53,12 +53,25 @@ describe('Worker Service', () => {
 
   beforeAll(async () => {
     try {
-      connection = await orm.connect([WorkerSchema], config.database);
+      connection = await orm.connect([WorkerSchema], {
+        type: 'postgres',
+        host: 'localhost',
+        port: 5432,
+        username: 'postgres',
+        password: 'postgres',
+        database: 'dubnium',
+      });
     } catch (err) {
       console.error('database connection failed');
     }
     try {
-      await storage.connect('task-manager', config.objectStorage);
+      await storage.connect('task-manager', {
+        endPoint: '127.0.0.1',
+        port: 9000,
+        useSSL: false,
+        accessKey: 'minioadmin',
+        secretKey: 'minioadmin',
+      });
     } catch (err) {
       console.error('object storage connection failed');
     }
