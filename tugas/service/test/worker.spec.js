@@ -2,7 +2,6 @@ const orm = require('../lib/orm');
 const storage = require('../lib/storage');
 const bus = require('../lib/bus');
 const { WorkerSchema } = require('../worker/worker.model');
-const { TaskSchema } = require('../tasks/task.model');
 const { config } = require('../config');
 const workerServer = require('../worker/server');
 const { truncate } = require('../worker/worker');
@@ -230,6 +229,43 @@ describe('Worker Service', () => {
       expect(data.age).toBe(23);
       expect(data.bio).toBe('Hello World!!!');
       expect(data.address).toBe('Nganjuk');
+    });
+
+    it('Seharusnya bisa menampilkan gambar pekerja', async () => {
+      const options1 = 'http://localhost:7001/list';
+      const response1 = await request(options1);
+      const data = JSON.parse(response1);
+      const photo = data[0].photo;
+      let contentType = '';
+      await new Promise((resolve, reject) => {
+        const req = http.request(
+          `http://localhost:7001/photo/${photo}`,
+          (res) => {
+            let data = '';
+            contentType = res.headers['content-type'];
+            if (res.statusCode === 404) {
+              reject('pekerja tidak ditemukan');
+            }
+            res.on('data', (chunk) => {
+              data += chunk.toString();
+            });
+            res.on('end', () => {
+              resolve(data);
+            });
+            res.on('error', (err) => {
+              reject((err && err.message) || err.toString());
+            });
+          }
+        );
+
+        req.on('error', (error) => {
+          console.error(error);
+        });
+        req.end();
+      });
+      expect(contentType).toBe('image/jpeg');
+      // const options2 = `http://localhost:7001/photo/${photo}`;
+      // const response2 = await request(options2);
     });
   });
 });
