@@ -10,7 +10,7 @@ jobs:
       mysql:
         image: mariadb:10.4
         env:
-          MYSQL_ROOT_PASSWORD: 
+          MYSQL_ROOT_PASSWORD: password
           MYSQL_DATABASE: dubnium
         ports:
           - 3306/tcp
