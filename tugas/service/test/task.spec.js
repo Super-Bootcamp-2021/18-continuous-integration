@@ -10,6 +10,7 @@ const FormData = require('form-data');
 const fs = require('fs');
 const { truncate } = require('../tasks/task');
 const http = require('http');
+const { isString } = require('util');
 
 function request(options, form = null) {
   return new Promise((resolve, reject) => {
@@ -79,6 +80,21 @@ async function findIdWorker() {
   const response = await request(options);
   return JSON.parse(response)[0].id;
 }
+async function findIdTask() {
+  const options = {
+    hostname: 'localhost',
+    port: 7002,
+    path: '/list',
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const response = await request(options);
+  return JSON.parse(response)[0].id;
+}
+// line testing
 describe('Task', () => {
   let connection;
   beforeAll(async () => {
@@ -114,10 +130,11 @@ describe('Task', () => {
 
     taskServer.run();
     workerServer.run();
+    await initWorkerDB();
   });
   beforeEach(async () => {
-    await truncate();
-    await initWorkerDB();
+    // await truncate();
+    // await initWorkerDB();
   });
   afterAll(async () => {
     await truncate();
@@ -127,8 +144,8 @@ describe('Task', () => {
     workerServer.stop();
   });
 
-  describe('task', () => {
-    it('get task', async () => {
+  describe('end point task', () => {
+    it('harusnya bisa ambil data task', async () => {
       const options = {
         hostname: 'localhost',
         port: 7002,
@@ -144,7 +161,7 @@ describe('Task', () => {
       expect(JSON.parse(data)).toHaveLength(0);
     });
 
-    it('add task', async () => {
+    it('harusnya bisa tambah task', async () => {
       const idWorker = await findIdWorker();
       console.log(idWorker);
       const form = new FormData();
@@ -171,7 +188,37 @@ describe('Task', () => {
       });
 
       // const data = JSON.parse(response);
+
       expect(JSON.parse(response).job).toBe('main bola');
+    });
+
+    it('harusnya bisa menyelesaikan task', async () => {
+      const idTask = await findIdTask();
+      const options = {
+        hostname: 'localhost',
+        port: 7002,
+        path: `/done?id=${idTask}`,
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      const respond = await request(options);
+      expect(JSON.parse(respond).done).toBe(true);
+    });
+    it('harusnya bisa membatalkan task', async () => {
+      const idTask = await findIdTask();
+      const options = {
+        hostname: 'localhost',
+        port: 7002,
+        path: `/cancel?id=${idTask}`,
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      const respond = await request(options);
+      expect(JSON.parse(respond).cancelled).toBe(true);
     });
   });
 });
