@@ -42,10 +42,10 @@ jobs:
       minio:
         image: 'docker.io/bitnami/minio:2021-debian-10'
         ports:
-          - 1111:1111                  
+          - '1111:1111'
         volumes:
-          - 'minio_data:/data'
-    
+          - 'minio_data:/webapp'
+          
     runs-on: ubuntu-latest
     env:
       cache-name: cache-node-modules
@@ -56,7 +56,7 @@ jobs:
       REDIS_HOST: redis
       # The default Redis port
       REDIS_PORT: 6379
-      MINIO_ACCESS_KEY: minio
+      MINIO_ACCESS_KEY: 'minio'
       MINIO_SECRET_KEY: '12345678'
       
     defaults:
