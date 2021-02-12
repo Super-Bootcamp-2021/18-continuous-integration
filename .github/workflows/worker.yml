@@ -33,9 +33,16 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      nats:
+        image: 'bitnami/nats:latest'
+        ports:
+          - 4222:4222
+          - 6222:6222
+          - 8222:8222        
 
     runs-on: ubuntu-latest
     env:
+      cache-name: cache-node-modules
       ## add secret on settings-secret-add new secret e.g name=POSTGRES_PASSWORD value=mypassword
       sanbercode2_database__password: ${{ secrets.POSTGRES_PASSWORD }}
       sanbercode2_database__database: ${{ secrets.POSTGRES_DB }}
