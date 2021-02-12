@@ -58,7 +58,7 @@ describe('Worker Service', () => {
         host: 'localhost',
         port: 3306,
         username: 'root',
-        password: 'mysql123',
+        password: 'password',
         database: 'dubnium',
       });
     } catch (err) {
