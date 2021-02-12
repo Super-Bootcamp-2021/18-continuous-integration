@@ -28,12 +28,6 @@ jobs:
         image: nats
         ports:
           - 4222:4222
-    steps:
-      - name: Verify MySQL connection from host
-        run: |
-          sudo apt-get install -y mysql-client
-          mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -ppassword -e "SHOW DATABASES"
-
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -44,6 +38,10 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12
+    - name: Verify MySQL connection from host
+        run: |
+          sudo apt-get install -y mysql-client
+          mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -ppassword -e "SHOW DATABASES"
     - name: Cache node modules
       uses: actions/cache@v2
       env:
