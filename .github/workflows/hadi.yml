@@ -27,6 +27,18 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
+      minio:
+        image: bitnami/minio:latest
+        env:
+          MINIO_ACCESS_KEY: minio
+          MINIO_SECRET_KEY: minio123
+        ports:
+          - 9000:9000
+        options: --name minio-server
+      nats:
+        image: nats
+        ports:
+          - 4222:4222
 
     runs-on: ubuntu-latest
     defaults:
@@ -51,4 +63,4 @@ jobs:
           ${{ runner.os }}-build-
           ${{ runner.os }}-
     - run: npm i
-    - run: npm test
+    - run: npm test:task
