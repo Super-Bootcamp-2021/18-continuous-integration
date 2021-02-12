@@ -78,9 +78,9 @@ jobs:
         image: nats
         ports:
           - 4222:4222
-      minio-service:
+      minio:
         # Docker Hub image
-        image: minio-service
+        image: minio
         env:
           MINIO_ROOT_USER: ${{ secrets.MINIO_ACCESS }}
           MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_SECRET }}
@@ -128,9 +128,9 @@ jobs:
         image: nats
         ports:
           - 4222:4222
-      minio-service:
+      minio:
         # Docker Hub image
-        image: minio-service
+        image: minio
         env:
           MINIO_ROOT_USER: ${{ secrets.MINIO_ACCESS }}
           MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_SECRET }}
