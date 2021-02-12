@@ -42,7 +42,7 @@ jobs:
       minio:
         image: lazybit/minio
         ports:
-          - 9000:9000
+          - 1111:1111
         env:
           MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
           MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
