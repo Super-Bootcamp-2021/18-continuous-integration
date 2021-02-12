@@ -64,7 +64,6 @@ jobs:
     defaults:
       run:
         working-directory: ./tugas
-    needs: build
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js 14
@@ -135,7 +134,6 @@ jobs:
     defaults:
       run:
         working-directory: ./tugas
-    needs: build
     - uses: actions/checkout@v2
     - name: Use Node.js 14
       uses: actions/setup-node@v1
