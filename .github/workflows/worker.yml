@@ -39,7 +39,7 @@ jobs:
       with:
         node-version: 12
     - name: Verify MySQL connection from host
-    - run: |
+      run: |
         sudo apt-get install -y mysql-client
         mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -ppassword -e "SHOW DATABASES"
     - name: Cache node modules
