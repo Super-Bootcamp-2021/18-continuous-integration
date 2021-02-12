@@ -59,7 +59,7 @@ describe('Worker Service', () => {
         port: 5432,
         username: 'postgres',
         password: 'postgres',
-        database: 'database',
+        database: 'dubnium',
       });
     } catch (err) {
       console.error('database connection failed');
