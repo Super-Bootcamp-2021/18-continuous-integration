@@ -40,16 +40,12 @@ jobs:
           - 6222:6222
           - 8222:8222        
       minio:
-        image: fclairamb/minio-github-actions
+        image: 'docker.io/bitnami/minio:2021-debian-10'
         ports:
-          - 1111:1111
-        env:
-          MINIO_ACCESS_KEY: minio
-          MINIO_SECRET_KEY: '12345678'
+          - 1111:1111                  
         volumes:
-          - ${{ github.workspace }}/tugas:/tugas
-        options: --name=minio --health-cmd "curl http://localhost:9000/minio/health/live"
-      
+          - 'minio_data:/data'
+    
     runs-on: ubuntu-latest
     env:
       cache-name: cache-node-modules
@@ -60,6 +56,8 @@ jobs:
       REDIS_HOST: redis
       # The default Redis port
       REDIS_PORT: 6379
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: '12345678'
       
     defaults:
       run:
