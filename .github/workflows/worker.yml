@@ -24,6 +24,16 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
+      minio:
+        image: lazybit/minio        
+        env:
+          MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
+          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+        volumes:
+          - ${{ github.workspace }}/data:/data
+        options: --name=minio --health-cmd "curl http://localhost:9000/minio/health/live"
+        ports:
+          - 9000:9000
 
     runs-on: ubuntu-latest
     env:
