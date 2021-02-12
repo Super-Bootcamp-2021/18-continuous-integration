@@ -44,8 +44,8 @@ jobs:
         ports:
           - 1111:1111
         env:
-          MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
-          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+          MINIO_ACCESS_KEY: minio
+          MINIO_SECRET_KEY: '12345678'
         volumes:
           - ${{ github.workspace }}/tugas:/tugas
         options: --name=minio --health-cmd "curl http://localhost:9000/minio/health/live"
