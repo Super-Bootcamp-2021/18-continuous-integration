@@ -58,7 +58,7 @@ describe('Worker Service', () => {
         host: 'localhost',
         port: 3306,
         username: 'root',
-        password: 'password',
+        password: 'dubnium',
         database: 'dubnium',
       });
     } catch (err) {
@@ -69,8 +69,8 @@ describe('Worker Service', () => {
         endPoint: '127.0.0.1',
         port: 9000,
         useSSL: false,
-        accessKey: 'minioadmin',
-        secretKey: 'minioadmin',
+        accessKey: 'admin',
+        secretKey: 'password',
       });
     } catch (err) {
       console.error('object storage connection failed');

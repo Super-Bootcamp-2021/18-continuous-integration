@@ -10,7 +10,7 @@ jobs:
       mysql:
         image: mariadb:10.4
         env:
-          MYSQL_ROOT_PASSWORD: password
+          MYSQL_ROOT_PASSWORD: dubnium
           MYSQL_DATABASE: dubnium
         ports:
           - 3306/tcp
@@ -18,8 +18,8 @@ jobs:
       minio:
         image: bitnami/minio:latest
         env:
-          MINIO_ACCESS_KEY: minioadmin
-          MINIO_SECRET_KEY: minioadmin
+          MINIO_ACCESS_KEY: admin
+          MINIO_SECRET_KEY: password
         ports:
           - 9000:9000
         options: --name minio-server
