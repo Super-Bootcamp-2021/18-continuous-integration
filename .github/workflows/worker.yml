@@ -1,3 +1,8 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: angga branch
+
 on:
   push:
     branches: [ angga ]
@@ -7,14 +12,21 @@ jobs:
     # Service containers to run with `container-job`
     services:
       # Label used to access the service container
-      mysql:
-        image: mariadb:latest
+      postgres:
+        # Docker Hub image
+        image: postgres:11
+        # Provide the password for postgres
         env:
-          MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: dubnium
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: dubnium
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
         ports:
-          - 13306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=10s --health-retries=10
+          - 5432:5432
       minio:
         image: bitnami/minio:latest
         env:
@@ -27,6 +39,7 @@ jobs:
         image: nats
         ports:
           - 4222:4222
+
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -37,10 +50,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12
-    - name: Verify MySQL connection from host
-      run: |
-        sudo apt-get install -y mysql-client
-        mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -ppassword -e "status"
     - name: Cache node modules
       uses: actions/cache@v2
       env:

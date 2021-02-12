@@ -54,12 +54,12 @@ describe('Worker Service', () => {
   beforeAll(async () => {
     try {
       connection = await orm.connect([WorkerSchema], {
-        type: 'mysql',
-        host: '172.18.0.1',
-        port: 13306,
-        username: 'root',
-        password: 'password',
-        database: 'dubnium',
+        type: 'postgres',
+        host: 'localhost',
+        port: 5432,
+        username: 'postgres',
+        password: 'postgres',
+        database: 'database',
       });
     } catch (err) {
       console.error('database connection failed');
