@@ -56,7 +56,7 @@ describe('Worker Service', () => {
       connection = await orm.connect([WorkerSchema], {
         type: 'mysql',
         host: '172.18.0.1',
-        port: 3306,
+        port: 13306,
         username: 'root',
         password: 'password',
         database: 'dubnium',
