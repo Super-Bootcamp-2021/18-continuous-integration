@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node .",
     "dev": "nodemon .",
-    "test": "jest",
+    "test:worker": "jest -- worker",
+    "test:task": "jest -- task",
     "lint": "eslint .",
     "docs": "jsdoc -c service/docs.json"
   },
@@ -18,15 +19,16 @@
     "eslint": "^7.19.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-prettier": "^3.3.1",
+    "form-data": "^3.0.0",
+    "jest": "^26.6.3",
     "jsdoc": "^3.6.6",
     "json-loader": "^0.5.7",
     "livereload": "^0.9.1",
+    "nock": "^13.0.7",
+    "node-fetch": "^2.6.1",
     "prettier": "^2.2.1",
     "style-loader": "^2.0.0",
-    "yaml-loader": "^0.6.0",
-    "jest": "^26.6.3",
-    "nock": "^13.0.7",
-    "node-fetch": "^2.6.1"
+    "yaml-loader": "^0.6.0"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.5.0",

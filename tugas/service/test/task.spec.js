@@ -1,44 +1,135 @@
-const { connect } = require('../lib/orm');
+/* eslint-disable no-undef */
+const orm = require('../lib/orm');
+const storage = require('../lib/storage');
+const bus = require('../lib/bus');
+const { WorkerSchema } = require('../worker/worker.model');
 const { TaskSchema } = require('../tasks/task.model');
-const { config } = require('../config');
-const server = require('../tasks/server');
-const fetch = require('node-fetch');
+const workerServer = require('../worker/server');
+const FormData = require('form-data');
+const fs = require('fs');
 const { truncate } = require('../tasks/task');
-const nock = require('nock');
-const { WorkerSchema, Worker } = require('../worker/worker.model');
+const http = require('http');
 
-describe('task', () => {
-  let connection;
-  beforeEach(async () => {
-    connection = await connect([TaskSchema, WorkerSchema], config.database);
-    const workerRepo = connection.getRepository('Worker');
-    const worker = new Worker(
-      null,
-      'Hadi',
-      30,
-      'pedagang',
-      'temanggung',
-      'hadi.jpg'
-    );
-    await workerRepo.save(worker);
-    const taskRepo = connection.getRepository('Task');
-    await taskRepo.save({
-      job: 'makan',
-      assignee: { id: 1 },
-      attachment: 'attachmen.jpg',
+function request(options, form = null) {
+  return new Promise((resolve, reject) => {
+    const req = http.request(options, (res) => {
+      let data = '';
+      if (res.statusCode === 404) {
+        reject(ERROR_WORKER_NOT_FOUND);
+      }
+      res.on('data', (chunk) => {
+        data += chunk.toString();
+      });
+      res.on('end', () => {
+        resolve(data);
+      });
+      res.on('error', (err) => {
+        reject((err && err.message) || err.toString());
+      });
     });
-    server.run();
+    req.on('error', (error) => {
+      console.error(error);
+    });
+    if (form) {
+      form.pipe(req);
+      req.on('response', function (res) {
+        console.log(res.statusCode);
+      });
+    } else {
+      req.end();
+    }
   });
-  afterEach(async () => {
+}
+
+describe('worker', () => {
+  let connection;
+  beforeAll(async () => {
+    try {
+      connection = await orm.connect([WorkerSchema, TaskSchema], {
+        type: 'postgres',
+        host: 'localhost',
+        port: 5432,
+        username: 'postgres',
+        password: 'postgres',
+        database: 'dubnium',
+      });
+      console.log('database connected');
+    } catch (err) {
+      console.error('database connection failed');
+    }
+    try {
+      await storage.connect('task-manager', {
+        endPoint: '127.0.0.1',
+        port: 9000,
+        useSSL: false,
+        accessKey: 'minioadmin',
+        secretKey: 'minioadmin',
+      });
+    } catch (err) {
+      console.error('object storage connection failed');
+    }
+    try {
+      await bus.connect();
+    } catch (err) {
+      console.error('message bus connection failed');
+    }
+    workerServer.run();
+  });
+  beforeEach(async () => {
+    await truncate();
+  });
+  afterAll(async () => {
     await truncate();
     await connection.close();
-    server.stop();
+    bus.close();
+    workerServer.stop();
   });
-  it('coba', async () => {
-    const res = await fetch('http://localhost:7002/list', {
-      method: 'get',
+
+  describe('worker', () => {
+    it('get worker', async () => {
+      const options = {
+        hostname: 'localhost',
+        port: 7001,
+        path: '/list',
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+
+      const response = await request(options);
+      const data = response;
+      expect(JSON.parse(data)).toHaveLength(0);
     });
-    const response = await res.json();
-    expect(response.length).toEqual(1);
+
+    it('add worker', async () => {
+      const form = new FormData();
+      form.append('name', 'user 1');
+      form.append('age', 29);
+      form.append('bio', 'test');
+      form.append('address', 'jkt');
+      form.append(
+        'photo',
+        fs.createReadStream('service/test/gambar/contoh.jpg')
+      );
+
+      const response = await new Promise((resolve, reject) => {
+        form.submit('http://localhost:7001/register', function (err, res) {
+          if (err) {
+            reject(err);
+          }
+          let data = '';
+          res.on('data', (chunk) => {
+            data += chunk.toString();
+          });
+          res.on('end', () => {
+            resolve(data);
+          });
+        });
+      });
+
+      const data = JSON.parse(response);
+      expect(data.name).toBe('user 1');
+    });
   });
 });

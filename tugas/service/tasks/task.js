@@ -62,7 +62,7 @@ async function truncate() {
   for (const entity of entities) {
     const repository = await getConnection().getRepository(entity.name); // Get repository
     try {
-      await repository.clear(); // Clear each entity table's content
+      await repository.delete(() => {}); // Clear each entity table's content
     } catch (error) {
       return false;
     }
