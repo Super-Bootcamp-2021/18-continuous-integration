@@ -59,8 +59,8 @@ describe('worker', () => {
     }
     try {
       await storage.connect('task-manager', {
-        endPoint: '127.0.0.1',
-        port: 1111,
+        endPoint: '0.0.0.0',
+        port: 9000,
         useSSL: false,
         accessKey: 'minio',
         secretKey: '12345678',
@@ -79,7 +79,7 @@ describe('worker', () => {
     await truncate();
   });
   afterAll(async () => {
-    //await truncate();
+    await truncate();
     await connection.close();
     bus.close();
     workerServer.stop();
