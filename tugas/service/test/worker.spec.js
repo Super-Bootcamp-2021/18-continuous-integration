@@ -6,7 +6,7 @@ const { WorkerSchema } = require('../worker/worker.model');
 const { TaskSchema } = require('../tasks/task.model');
 const workerServer = require('../worker/server');
 const FormData = require('form-data');
-const {truncate} = require('../worker/worker')
+const { truncate } = require('../worker/worker');
 const fs = require('fs');
 const http = require('http');
 const path = require('path');
@@ -129,7 +129,7 @@ describe('worker', () => {
       expect(data.name).toBe('user 1');
     });
   });
-  describe('show photo',  () => {
+  describe('show photo', () => {
     it('should show worker photo', async () => {
       const form = new FormData();
       form.append('name', 'user 1');
@@ -163,11 +163,11 @@ describe('worker', () => {
         hostname: 'localhost',
         port: 7001,
         path: `/photo/${data.photo}`,
-        method: 'GET'
-      }
-      const photo = await request(option)
-      
-      expect(typeof photo).toBe('string')
+        method: 'GET',
+      };
+      const photo = await request(option);
+
+      expect(typeof photo).toBe('string');
     });
   });
 });
