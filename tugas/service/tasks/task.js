@@ -89,7 +89,12 @@ function list() {
  */
 async function truncate() {
   const repository = await getConnection().getRepository('Task'); // Get repository
-  await repository.clear(); // Clear each entity table's content
+  try {
+    await repository.clear(); // Clear each entity table's content
+  } catch (error) {
+    return false;
+  }
+  return true;
 }
 
 module.exports = {
