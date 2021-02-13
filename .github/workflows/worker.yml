@@ -40,11 +40,11 @@ jobs:
           - 6222:6222
           - 8222:8222        
       minio:
-        image: 'minio/mc'
+        image: 'bitnami/minio:latest'
         ports:
           - '9000:9000'
         volumes:
-          - ${{ github.workspace }}
+          - ${{ github.workspace }}/webapp    
         options: >-
           --health-cmd "mc admin health"
           --health-interval 10s         
