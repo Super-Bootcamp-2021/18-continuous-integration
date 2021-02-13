@@ -43,8 +43,8 @@ jobs:
         image: 'bitnami/minio:latest'
         ports:
           - '9000:9000'
-        volumes:
-          - ${{ github.workspace }}/task-manager:/task-manager
+        #volumes:
+        #  - ${{ github.workspace }}/task-manager:/task-manager
           
     runs-on: ubuntu-latest
     env:
@@ -83,10 +83,10 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
             
-      - name: Bucket Minion
-          # You may pin to the exact commit or the version.
-          # uses: Ash258/Scoop-GithubActions@5de4a972868f3a881946bf540233900c5f57b049
-        uses: Ash258/Scoop-GithubActions@1.5.0.2
+      - name: Minio upload
+        # You may pin to the exact commit or the version.
+        # uses: lovellfelix/minio-deploy-action@cfc4b36780804138fc0df64d8e862ed28db7fd34
+        uses: lovellfelix/minio-deploy-action@v1.1.1        
         
       - run: npm install
       - run: npm run test:worker
