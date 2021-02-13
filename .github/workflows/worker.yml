@@ -40,7 +40,7 @@ jobs:
           - 6222:6222
           - 8222:8222        
       minio:
-        image: 'lazybit/minio'
+        image: 'bitnami/minio:latest'
         ports:
           - '9000:9000'
             
@@ -52,6 +52,9 @@ jobs:
         
         volumes:
           - ${{ github.workspace }}/data:/data
+        env:
+          MINIO_ACCESS_KEY: 'minio'
+          MINIO_SECRET_KEY: '12345678'
   
     runs-on: ubuntu-latest
     env:
@@ -64,10 +67,7 @@ jobs:
       REDIS_HOST: redis
       # The default Redis port
       REDIS_PORT: 6379
-      
-      MINIO_ACCESS_KEY: 'minio'
-      MINIO_SECRET_KEY: '12345678'
-            
+                
       
     defaults:
       run:
