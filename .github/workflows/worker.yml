@@ -51,8 +51,8 @@ jobs:
           --health-retries 5
                
         env:
-          MINIO_ACCESS_KEY: 'minio'
-          MINIO_SECRET_KEY: '12345678'
+          MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
+          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
   
     runs-on: ubuntu-latest
     env:
