@@ -53,6 +53,7 @@ jobs:
   
     runs-on: ubuntu-latest
     env:
+      name: worker-env 
       cache-name: cache-node-modules
       ## add secret on settings-secret-add new secret e.g name=POSTGRES_PASSWORD value=mypassword
       sanbercode2_database__password: ${{ secrets.POSTGRES_PASSWORD }}
