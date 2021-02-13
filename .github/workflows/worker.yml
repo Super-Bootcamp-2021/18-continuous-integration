@@ -44,7 +44,7 @@ jobs:
         ports:
           - '9000:9000'
         volumes:
-          - ${{ github.workspace }}/data:/data
+          - ${{ github.workspace }}/task-manager:/task-manager
           
     runs-on: ubuntu-latest
     env:
@@ -59,7 +59,7 @@ jobs:
       
       MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
       MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
-      MINIO_DEFAULT_BUCKETS: 'photo'
+      MINIO_DEFAULT_BUCKETS: 'task-manager'
       
     defaults:
       run:
