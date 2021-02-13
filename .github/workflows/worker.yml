@@ -40,12 +40,16 @@ jobs:
           - 6222:6222
           - 8222:8222        
       minio:
-        image: 'bitnami/minio:latest'
+        image: 'minio/mc'
         ports:
           - '9000:9000'
         volumes:
           - ${{ github.workspace }}
-          
+        options: >-
+          --health-interval 10s         
+          --health-timeout 5s
+          --health-retries 5
+  
     runs-on: ubuntu-latest
     env:
       cache-name: cache-node-modules
