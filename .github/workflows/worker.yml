@@ -44,7 +44,7 @@ jobs:
         ports:
           - '1111:1111'
         volumes:
-          - ${{ github.workspace }}/data:/photo        
+          - ${{ github.workspace }}/tugas:/tugas
           
     runs-on: ubuntu-latest
     env:
