@@ -46,6 +46,7 @@ jobs:
         volumes:
           - ${{ github.workspace }}
         options: >-
+          --health-cmd "mc admin health"
           --health-interval 10s         
           --health-timeout 5s
           --health-retries 5
