@@ -6,13 +6,13 @@ const defaultConfig = {
     host: 'localhost',
     port: 5432,
     username: 'postgres',
-    password: 'postgres',
-    database: 'database',
+    password: 'stratosfer10110100',
+    database: 'sanbercode',
   },
   server: {
-    task_port: 80,
-    worker_port: 81,
-    performance_port: 82,
+    task_port: 7002,
+    worker_port: 7001,
+    performance_port: 7003,
   },
   minio: {
     endPoint: '127.0.0.1',
