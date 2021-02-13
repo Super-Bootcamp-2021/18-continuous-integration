@@ -49,9 +49,7 @@ jobs:
           --health-interval 10s         
           --health-timeout 5s
           --health-retries 5
-        
-        volumes:
-          - /tugas:/tugas
+               
         env:
           MINIO_ACCESS_KEY: 'minio'
           MINIO_SECRET_KEY: '12345678'
