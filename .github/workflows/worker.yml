@@ -43,8 +43,8 @@ jobs:
         image: 'bitnami/minio:latest'
         ports:
           - '9000:9000'
-        #volumes:
-        #  - ${{ github.workspace }}/task-manager:/task-manager
+        volumes:
+          - ${{ github.workspace }}
           
     runs-on: ubuntu-latest
     env:
@@ -83,5 +83,6 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
                     
+      - run: docker pull minio/minio
       - run: npm install
       - run: npm run test:worker
