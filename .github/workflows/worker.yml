@@ -43,13 +43,18 @@ jobs:
         image: 'bitnami/minio:latest'
         ports:
           - '9000:9000'
-        volumes:
-          - ${{ github.workspace }}/webapp    
+            
         options: >-
           --health-cmd "mc admin health"
           --health-interval 10s         
           --health-timeout 5s
           --health-retries 5
+        env:
+          MINIO_ACCESS_KEY: 'minio'
+          MINIO_SECRET_KEY: '12345678'      
+          MINIO_DEFAULT_BUCKETS: 'task-manager'
+        volumes:
+          - ${{ github.workspace }}/data:/data
   
     runs-on: ubuntu-latest
     env:
@@ -62,10 +67,7 @@ jobs:
       REDIS_HOST: redis
       # The default Redis port
       REDIS_PORT: 6379
-      
-      MINIO_ACCESS_KEY: 'minio'
-      MINIO_SECRET_KEY: '12345678'
-      MINIO_DEFAULT_BUCKETS: 'task-manager'
+            
       
     defaults:
       run:
