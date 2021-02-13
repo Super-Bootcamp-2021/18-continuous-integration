@@ -51,7 +51,7 @@ jobs:
           --health-retries 5
         
         volumes:
-          - ${{ github.workspace }}/data:/data
+          - /tugas:/tugas
         env:
           MINIO_ACCESS_KEY: 'minio'
           MINIO_SECRET_KEY: '12345678'
