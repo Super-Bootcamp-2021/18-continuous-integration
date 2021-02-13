@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 
-describe('worker', () => {
+describe.skip('worker', () => {
   describe('worker', () => {
     it('get test', async () => {
       const test = 'test';
