@@ -5,9 +5,9 @@ const bus = require('../lib/bus');
 const { WorkerSchema } = require('../worker/worker.model');
 const { TaskSchema } = require('../tasks/task.model');
 const workerServer = require('../worker/server');
+const { truncate } = require('../worker/worker');
 const FormData = require('form-data');
 const fs = require('fs');
-const { truncate } = require('../worker/worker');
 const http = require('http');
 const path = require('path');
 
