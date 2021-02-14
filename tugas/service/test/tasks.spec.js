@@ -74,7 +74,7 @@ describe('Task Service', () => {
     form.append('job', 'makan');
     form.append('assignee_id', 1);
     form.append('attachment', fs.createReadStream('assets/test.jpg'));
-    nock('http://localhost:81').get('/info').query({ id: 1 }).reply(200, {
+    nock('http://localhost:7001').get('/info').query({ id: 1 }).reply(200, {
       address: 'bekasi',
       age: 23,
       bio: 'oke',
@@ -84,7 +84,7 @@ describe('Task Service', () => {
     });
 
     await new Promise((resolve, reject) => {
-      form.submit('http://localhost:80/add', function (err, res) {
+      form.submit('http://localhost:7002/add', function (err, res) {
         if (err) {
           reject(err);
         }
@@ -109,14 +109,14 @@ describe('Task Service', () => {
   });
 
   describe('Task List', () => {
-    it('get task list', async () => {
-      const response = JSON.parse(await req('http://localhost:80/list'));
-      const data = JSON.parse(response.data);
-      expect(data).toHaveLength(1);
+    it.only('get task list', async () => {
+      const response = JSON.parse(await req('http://localhost:7002/list'));
+      // const data = JSON.parse(response.data);
+      expect(response).toBe('a');
     });
 
     it('add new task', async () => {
-      nock('http://localhost:81').get('/info').query({ id: 1 }).reply(200, {
+      nock('http://localhost:7001').get('/info').query({ id: 1 }).reply(200, {
         address: 'bekasi',
         age: 23,
         bio: 'oke',
@@ -130,7 +130,7 @@ describe('Task Service', () => {
       form.append('attachment', fs.createReadStream('assets/test.jpg'));
 
       const taskResponse = await new Promise((resolve, reject) => {
-        form.submit('http://localhost:80/add', function (err, res) {
+        form.submit('http://localhost:7002/add', function (err, res) {
           if (err) {
             reject(err);
           }
@@ -150,7 +150,7 @@ describe('Task Service', () => {
     it('done task', async () => {
       const options = {
         hostname: 'localhost',
-        port: 80,
+        port: 7002,
         path: '/done?id=1',
         method: 'PUT',
         headers: {
@@ -165,7 +165,7 @@ describe('Task Service', () => {
     it('cancel task', async () => {
       const options = {
         hostname: 'localhost',
-        port: 80,
+        port: 7002,
         path: '/cancel?id=1',
         method: 'PUT',
         headers: {
@@ -178,10 +178,10 @@ describe('Task Service', () => {
     });
 
     it('get attachment', async () => {
-      const resList = JSON.parse(await req('http://localhost:80/list'));
+      const resList = JSON.parse(await req('http://localhost:7002/list'));
       const obj = JSON.parse(resList.data);
       const file = obj[0].attachment;
-      const res = await req(`http://localhost:80/attachment/${file}`);
+      const res = await req(`http://localhost:7002/attachment/${file}`);
       const obj2 = JSON.parse(res);
       expect(obj2.headers['content-type']).toBe('image/jpeg');
     });
