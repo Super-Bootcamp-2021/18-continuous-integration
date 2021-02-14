@@ -109,6 +109,59 @@ describe('Task Service', () => {
   });
 
   describe('Task List', () => {
+    it('get task list', async () => {
+      const response = JSON.parse(await req('http://localhost:7002/list'));
+      const data = JSON.parse(response.data);
+      expect(data).toHaveLength(1);
+    });
+
+    it('add new task', async () => {
+      nock('http://localhost:7001').get('/info').query({ id: 1 }).reply(200, {
+        address: 'bekasi',
+        age: 23,
+        bio: 'oke',
+        id: 1,
+        name: 'Ojan',
+        photo: 'user-1.jpeg',
+      });
+      const form = new FormData();
+      form.append('job', 'menonton');
+      form.append('assignee_id', 1);
+      form.append('attachment', fs.createReadStream('assets/test.jpg'));
+
+      const taskResponse = await new Promise((resolve, reject) => {
+        form.submit('http://localhost:7002/add', function (err, res) {
+          if (err) {
+            reject(err);
+          }
+          let data = '';
+          res.on('data', (chunk) => {
+            data += chunk.toString();
+          });
+          res.on('end', () => {
+            resolve(data);
+          });
+        });
+      });
+      const data = JSON.parse(taskResponse);
+      expect(data.job).toBe('menonton');
+    });
+
+    it('done task', async () => {
+      const options = {
+        hostname: 'localhost',
+        port: 7002,
+        path: '/done?id=1',
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      const res = JSON.parse(await req(options));
+      const data2 = JSON.parse(res.data);
+      expect(data2.done).toBeTruthy();
+    });
+
     it('cancel task', async () => {
       const options = {
         hostname: 'localhost',
