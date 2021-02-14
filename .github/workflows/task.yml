@@ -51,10 +51,10 @@ jobs:
         working-directory: ./tugas
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js 12
-      uses: actions/setup-node@v1
+    - name: Use Node.js 14
+      uses: actions/setup-node@v2
       with:
-        node-version: 12
+        node-version: 14
     - name: Cache node modules
       uses: actions/cache@v2
       env:
