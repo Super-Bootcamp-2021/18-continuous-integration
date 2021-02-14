@@ -9,39 +9,7 @@ const taskServer = require('../tasks/server');
 const FormData = require('form-data');
 const fs = require('fs');
 const { truncate } = require('../worker/worker');
-const http = require('http');
 const { config } = require('../config');
-
-function request(options, form = null) {
-  return new Promise((resolve, reject) => {
-    const req = http.request(options, (res) => {
-      let data = '';
-      if (res.statusCode === 404) {
-        reject(ERROR_WORKER_NOT_FOUND);
-      }
-      res.on('data', (chunk) => {
-        data += chunk.toString();
-      });
-      res.on('end', () => {
-        resolve(data);
-      });
-      res.on('error', (err) => {
-        reject((err && err.message) || err.toString());
-      });
-    });
-    req.on('error', (error) => {
-      console.error(error);
-    });
-    if (form) {
-      form.pipe(req);
-      req.on('response', function (res) {
-        console.log(res.statusCode);
-      });
-    } else {
-      req.end();
-    }
-  });
-}
 
 describe('Task-Service', () => {
   let connection;
