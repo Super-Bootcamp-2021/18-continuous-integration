@@ -2,18 +2,14 @@
 const orm = require('../lib/orm');
 const storage = require('../lib/storage');
 const bus = require('../lib/bus');
-
-const { connect } = require('../lib/orm');
 const { config } = require('../config');
 const taskServer = require('../tasks/server');
 const workerServer = require('../worker/server');
 const { TaskSchema } = require('../tasks/task.model');
 const { WorkerSchema } = require('../worker/worker.model');
 const { truncate } = require('../tasks/task');
-const FormData = require('form-data');
-const fs = require('fs');
-const nock = require('nock');
-const { request, addTask } = require('./request')
+// const nock = require('nock');
+const { request, addTask } = require('./request');
 
 describe('task', () => {
   let connection;
@@ -21,7 +17,10 @@ describe('task', () => {
   let data;
   beforeAll(async () => {
     try {
-      connection = await orm.connect([WorkerSchema, TaskSchema], config.database);
+      connection = await orm.connect(
+        [WorkerSchema, TaskSchema],
+        config.database
+      );
     } catch (err) {
       console.error('database connection failed');
     }
@@ -51,7 +50,9 @@ describe('task', () => {
   });
   describe('Data Handling', () => {
     it('get list task', async () => {
-      response = await request(`http://localhost:${config.server.taskPort}/list`);
+      response = await request(
+        `http://localhost:${config.server.taskPort}/list`
+      );
       data = JSON.parse(response);
       expect(data).toHaveLength(1);
     });
@@ -62,19 +63,25 @@ describe('task', () => {
       data = JSON.parse(response['task']);
       expect(data.job).toBe('Makan');
 
-      response = await request(`http://localhost:${config.server.taskPort}/list`);
+      response = await request(
+        `http://localhost:${config.server.taskPort}/list`
+      );
       data = JSON.parse(response);
       expect(data).toHaveLength(2);
     });
     it('get list worker', async () => {
-      response = await request(`http://localhost:${config.server.workerPort}/list`);
+      response = await request(
+        `http://localhost:${config.server.workerPort}/list`
+      );
       data = JSON.parse(response);
       expect(data).toHaveLength(1);
     });
 
     describe.only('Update Status', () => {
       it('update status to be done', async () => {
-        response = await request(`http://localhost:${config.server.taskPort}/list`);
+        response = await request(
+          `http://localhost:${config.server.taskPort}/list`
+        );
         dataTask = JSON.parse(response);
 
         const options = {
@@ -91,7 +98,9 @@ describe('task', () => {
         expect(data.done).toBeTruthy();
       });
       it('update status to be cancelled', async () => {
-        response = await request(`http://localhost:${config.server.taskPort}/list`);
+        response = await request(
+          `http://localhost:${config.server.taskPort}/list`
+        );
         dataTask = JSON.parse(response);
 
         const options = {
@@ -107,13 +116,13 @@ describe('task', () => {
         data = JSON.parse(response);
         expect(data.cancelled).toBeTruthy();
       });
-    })
+    });
     describe('Attachment', () => {
       it('show attachment', async () => {
         const test = 'show attachment';
         expect(test).toBe('show attachment');
       });
-    })
+    });
   });
   describe('Error Handling', () => {
     it('form not completed', async () => {
@@ -138,6 +147,6 @@ describe('task', () => {
         const test = 'failed to update status to be cancelled';
         expect(test).toBe('failed to update status to be cancelled');
       });
-    })
-  })
+    });
+  });
 });

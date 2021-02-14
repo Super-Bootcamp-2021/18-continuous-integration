@@ -7,7 +7,7 @@ const defaultConfig = {
     port: 5432,
     username: 'postgres',
     password: '',
-    database: 'database'
+    database: 'database',
   },
   server: {
     workerPort: 7001,
@@ -20,7 +20,7 @@ const defaultConfig = {
     useSSL: false,
     accessKey: 'local-minio',
     secretKey: 'local-test-secret',
-  }
+  },
 };
 
 const config = rc('tm', defaultConfig);
