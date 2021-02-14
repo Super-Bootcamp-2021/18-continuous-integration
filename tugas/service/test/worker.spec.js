@@ -9,6 +9,7 @@ const FormData = require('form-data');
 const fs = require('fs');
 const { truncate } = require('../worker/worker');
 const http = require('http');
+const { config } = require('../config');
 
 function request(options, form = null) {
   return new Promise((resolve, reject) => {
@@ -46,23 +47,23 @@ describe('worker', () => {
   beforeAll(async () => {
     try {
       connection = await orm.connect([WorkerSchema, TaskSchema], {
-        type: 'postgres',
-        host: 'localhost',
-        port: 5432,
-        username: 'postgres',
-        password: 'postgres',
-        database: 'sanbercode',
+        type: config.database?.type,
+        host: config.database?.host,
+        port: config.database?.port,
+        username: config.database?.username,
+        password: config.database?.password,
+        database: config.database?.database,
       });
     } catch (err) {
       console.error('database connection failed');
     }
     try {
       await storage.connect('task-manager', {
-        endPoint: '127.0.0.1',
-        port: 9000,
-        useSSL: false,
-        accessKey: 'minioadmin',
-        secretKey: 'minioadmin',
+        endPoint: config.minio?.endPoint,
+        port: config.minio?.port,
+        useSSL: config.minio?.useSSL,
+        accessKey: config.minio?.accessKey,
+        secretKey: config.minio?.secretKey,
       });
     } catch (err) {
       console.error('object storage connection failed');
