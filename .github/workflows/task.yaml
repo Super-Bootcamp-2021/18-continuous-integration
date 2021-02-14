@@ -17,8 +17,11 @@ jobs:
         image: postgres:11
         # Provide the password for postgres
         env:
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_PASSWORD: 123456
+          POSTGRES_DB: sanbercode2
+        # env:
+        #   POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        #   POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
