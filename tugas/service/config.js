@@ -5,7 +5,7 @@ const defaultConfig = {
     type: 'postgres',
     host: 'localhost',
     port: 5432,
-    username: 'masdimya',
+    username: 'postgres',
     password: '1234567890',
     database: 'sanbercode2',
   },
@@ -15,6 +15,9 @@ const defaultConfig = {
     useSSL: false,
     accessKey: 'minioadmin',
     secretKey: 'minioadmin',
+  },
+  nats: {
+    port: 4222,
   },
   server: {
     taskPort: 7002,
