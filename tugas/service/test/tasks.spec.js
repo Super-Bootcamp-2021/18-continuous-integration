@@ -14,10 +14,11 @@ const {
   ERROR_TASK_NOT_FOUND,
 } = require('../tasks/task');
 // const nock = require('nock');
-const { request, requestOther, addTask } = require('./request');
+const { request, requestCallback, requestOther, addTask } = require('./request');
 const FormData = require('form-data');
 const fs = require('fs');
 const { ERROR_WORKER_NOT_FOUND } = require('../tasks/worker.client');
+const { ERROR_WITHOUT_ID_PARAM } = require('../tasks/task.service');
 
 describe('task', () => {
   let connection;
@@ -130,8 +131,15 @@ describe('task', () => {
     });
     describe('Attachment', () => {
       it('show attachment', async () => {
-        const test = 'show attachment';
-        expect(test).toBe('show attachment');
+        response = await request(
+          `http://localhost:${config.server.taskPort}/list`
+        );
+        data = JSON.parse(response)
+        
+        response = await requestCallback(
+          `http://localhost:${config.server.taskPort}/attachment/${data[0]['attachment']}`
+        );
+        expect(response.statusCode).toBe(200);
       });
     });
   });
@@ -198,6 +206,14 @@ describe('task', () => {
       });
       expect(responseTask).toBe(ERROR_WORKER_NOT_FOUND);
     });
+    describe('Attachment', () => {
+      it('failed - file not found', async () => {
+        response = await requestCallback(
+          `http://localhost:${config.server.taskPort}/attachment/blabla.file`
+        );
+        expect(response.statusCode).toBe(404);
+      });
+    });
 
     describe('Update Status', () => {
       it('failed to update status to be done', async () => {
@@ -243,6 +259,31 @@ describe('task', () => {
         };
         response = await requestOther(options);
         expect(response).toBe(ERROR_TASK_NOT_FOUND);
+      });
+      it('failed - no id param', async () => {
+        options = {
+          hostname: 'localhost',
+          port: config.server.taskPort,
+          path: `/done`,
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        };
+        response = await requestOther(options);
+        expect(response).toBe(ERROR_WITHOUT_ID_PARAM);
+
+        options = {
+          hostname: 'localhost',
+          port: config.server.taskPort,
+          path: `/cancel`,
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        };
+        response = await requestOther(options);
+        expect(response).toBe(ERROR_WITHOUT_ID_PARAM);
       });
     });
   });

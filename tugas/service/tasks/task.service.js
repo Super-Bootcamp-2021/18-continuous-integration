@@ -13,6 +13,8 @@ const {
 } = require('./task');
 const { saveFile, readFile, ERROR_FILE_NOT_FOUND } = require('../lib/storage');
 
+ERROR_WITHOUT_ID_PARAM = 'parameter id tidak ditemukan';
+
 function addSvc(req, res) {
   const busboy = new Busboy({ headers: req.headers });
 
@@ -107,7 +109,7 @@ async function doneSvc(req, res) {
   const id = uri.query['id'];
   if (!id) {
     res.statusCode = 401;
-    res.write('parameter id tidak ditemukan');
+    res.write(ERROR_WITHOUT_ID_PARAM);
     res.end();
     return;
   }
@@ -140,7 +142,7 @@ async function cancelSvc(req, res) {
   const id = uri.query['id'];
   if (!id) {
     res.statusCode = 401;
-    res.write('parameter id tidak ditemukan');
+    res.write(ERROR_WITHOUT_ID_PARAM);
     res.end();
     return;
   }
@@ -196,4 +198,5 @@ module.exports = {
   doneSvc,
   cancelSvc,
   getAttachmentSvc,
+  ERROR_WITHOUT_ID_PARAM,
 };

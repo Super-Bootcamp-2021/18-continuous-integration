@@ -35,6 +35,37 @@ function request(options, form = null) {
   });
 }
 
+function requestCallback(options, form = null) {
+  return new Promise((resolve, reject) => {
+    const req = http.request(options, (res) => {
+      let data = '';
+      res.on('data', (chunk) => {
+        data += chunk.toString();
+      });
+      res.on('end', () => {
+        callback = {
+          data: data,
+          statusCode: res.statusCode
+        }
+        resolve(callback);
+      });
+      res.on('error', (err) => {
+        reject((err && err.message) || err.toString());
+      });
+    });
+    req.on('error', (error) => {
+      console.error(error);
+    });
+    if (form) {
+      form.pipe(req);
+      req.on('response', function (res) {
+        console.log(res.statusCode);
+      });
+    } else {
+      req.end();
+    }
+  });
+}
 function requestOther(options, form = null) {
   return new Promise((resolve, reject) => {
     const req = http.request(options, (res) => {
@@ -120,6 +151,7 @@ async function addTask() {
 
 module.exports = {
   request,
+  requestCallback,
   requestOther,
   addTask,
 };
