@@ -6,7 +6,41 @@ const workerServer = require('../worker/server');
 const { TaskSchema } = require('../tasks/task.model');
 const { WorkerSchema } = require('../worker/worker.model');
 const { truncate } = require('../tasks/task');
+const FormData = require('form-data');
+const fs = require('fs');
+const http = require('http');
 const nock = require('nock');
+
+function request(options, form = null) {
+  return new Promise((resolve, reject) => {
+    const req = http.request(options, (res) => {
+      let data = '';
+      if (res.statusCode === 404) {
+        reject(ERROR_TASK_NOT_FOUND);
+      }
+      res.on('data', (chunk) => {
+        data += chunk.toString();
+      });
+      res.on('end', () => {
+        resolve(data);
+      });
+      res.on('error', (err) => {
+        reject((err && err.message) || err.toString());
+      });
+    });
+    req.on('error', (error) => {
+      console.error(error);
+    });
+    if (form) {
+      form.pipe(req);
+      req.on('response', function (res) {
+        console.log(res.statusCode);
+      });
+    } else {
+      req.end();
+    }
+  });
+}
 
 describe('task', () => {
   let connection;
@@ -14,6 +48,9 @@ describe('task', () => {
     connection = await connect([WorkerSchema, TaskSchema], config.database);
     taskServer.run();
     workerServer.run();
+  });
+  beforeEach(async () => {
+    await truncate();
   });
   // beforeEach(async () => {
   //   await fetch('http://localhost:7001/add', {
@@ -45,14 +82,21 @@ describe('task', () => {
   });
   describe('Data Handling', () => {
     it('get list task', async () => {
-      const res = await fetch('http://localhost:7002/list', {
-        method: 'get',
-        headers: { 'Content-type': 'application/json' },
-      });
-      const response = await res.json();
-      expect(response).toHaveLength(1);
+      const response = await request(`http://localhost:${config.server.taskPort}/list`);
+      const data = JSON.parse(response);
+      expect(data).toHaveLength(0);
     });
     it.only('add task', async () => {
+      const options = {
+        hostname: 'localhost',
+        port: 7002,
+        path: '/list',
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      
       const test = 'add task';
       expect(test).toBe('add task');
     });
