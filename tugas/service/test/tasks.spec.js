@@ -11,30 +11,21 @@ const fs = require('fs');
 const { truncate } = require('../worker/worker');
 const { config } = require('../config');
 
-describe('Task-Service', () => {
+describe('Worker', () => {
   let connection;
   beforeAll(async () => {
     try {
-      connection = await orm.connect([WorkerSchema, TaskSchema], {
-        type: config.database?.type,
-        host: config.database?.host,
-        port: config.database?.port,
-        username: config.database?.username,
-        password: config.database?.password,
-        database: config.database?.database,
-      });
+      connection = await orm.connect(
+        [WorkerSchema, TaskSchema],
+        config.database
+      );
     } catch (err) {
       console.error('database connection failed');
     }
     try {
-      await storage.connect('task-manager', {
-        endPoint: config.minio?.endPoint,
-        port: config.minio?.port,
-        useSSL: config.minio?.useSSL,
-        accessKey: config.minio?.accessKey,
-        secretKey: config.minio?.secretKey,
-      });
+      await storage.connect('task-manager', config.storage);
     } catch (err) {
+      console.error(err);
       console.error('object storage connection failed');
     }
     try {
@@ -43,7 +34,6 @@ describe('Task-Service', () => {
       console.error('message bus connection failed');
     }
     workerServer.run();
-    taskServer.run();
   });
   beforeEach(async () => {
     await truncate();
@@ -53,7 +43,6 @@ describe('Task-Service', () => {
     await connection.close();
     bus.close();
     workerServer.stop();
-    taskServer.stop();
   });
 
   it('add task', async () => {
