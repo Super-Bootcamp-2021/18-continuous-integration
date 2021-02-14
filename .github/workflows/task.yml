@@ -133,13 +133,13 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ## add secret on settings-secret-add new secret e.g name=POSTGRES_PASSWORD value=mypassword
-      server_database__password: ${{ secrets.POSTGRES_PASSWORD}}
-      server_database__database: ${{ secrets.POSTGRES_DB}}
-      server_minio__accessKey: ${{ secrets.MINIO_ACCESS_KEY}}
-      server_minio__secretKey: ${{ secrets.MINIO_SECRET_KEY}}
-      server_server__port___task: 7002
-      server_server__port___worker: 7001
-      server_server__port___performance: 7003
+      tm_database__password: ${{ secrets.POSTGRES_PASSWORD}}
+      tm_database__database: ${{ secrets.POSTGRES_DB}}
+      tm_minio__accessKey: ${{ secrets.MINIO_ACCESS_KEY}}
+      tm_minio__secretKey: ${{ secrets.MINIO_SECRET_KEY}}
+      tm_server__port__task: 7002
+      tm_server__port__worker: 7001
+      tm_server__port__performance: 7003
     defaults:
       run:
         working-directory: ./tugas
