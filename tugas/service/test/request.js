@@ -1,20 +1,15 @@
+const { config } = require('../config');
+const FormData = require('form-data');
+const fs = require('fs');
 const http = require('http');
 
-function postRequest(JSONData, PORT, path) {
+function request(options, form = null) {
   return new Promise((resolve, reject) => {
-    const postData = JSON.stringify(JSONData);
-    const options = {
-      host: 'localhost',
-      port: PORT,
-      path: path,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': postData.length,
-      },
-    };
-    const callback = function (res) {
+    const req = http.request(options, (res) => {
       let data = '';
+      if (res.statusCode === 404) {
+        reject(ERROR_TASK_NOT_FOUND);
+      }
       res.on('data', (chunk) => {
         data += chunk.toString();
       });
@@ -22,19 +17,72 @@ function postRequest(JSONData, PORT, path) {
         resolve(data);
       });
       res.on('error', (err) => {
-        reject(err);
+        reject((err && err.message) || err.toString());
       });
-    };
-    const req = http.request(options, callback);
-    req.on('error', (err) => {
-      console.error(err);
     });
-    req.write(postData);
-    req.end();
-    return;
+    req.on('error', (error) => {
+      console.error(error);
+    });
+    if (form) {
+      form.pipe(req);
+      req.on('response', function (res) {
+        console.log(res.statusCode);
+      });
+    } else {
+      req.end();
+    }
   });
 }
 
+async function addTask() {
+  const formWorker = new FormData();
+    formWorker.append('name', 'user 1');
+    formWorker.append('age', 29);
+    formWorker.append('bio', 'test');
+    formWorker.append('address', 'jkt');
+    formWorker.append('photo', fs.createReadStream('assets/nats.png'));
+    const responseWorker = await new Promise((resolve, reject) => {
+      formWorker.submit(`http://localhost:${config.server.workerPort}/register`, function (err, res) {
+        if (err) {
+          reject(err);
+        }
+        let data = '';
+        res.on('data', (chunk) => {
+          data += chunk.toString();
+        });
+        res.on('end', () => {
+          resolve(data);
+        });
+      });
+    });
+    const dataWorker = JSON.parse(responseWorker);
+    
+    const formTask = new FormData();
+    formTask.append('job', 'Makan');
+    formTask.append('assignee_id', dataWorker.id);
+    formTask.append('attachment', fs.createReadStream('assets/makan.txt'));
+    const responseTask = await new Promise((resolve, reject) => {
+      formTask.submit(`http://localhost:${config.server.taskPort}/add`, function (err, res) {
+        if (err) {
+          reject(err);
+        }
+        let data = '';
+        res.on('data', (chunk) => {
+          data += chunk.toString();
+        });
+        res.on('end', () => {
+          resolve(data);
+        });
+      });
+    });
+    response = {
+      'worker': responseWorker,
+      'task': responseTask,
+    }
+    return response;
+}
+
 module.exports = {
-  postRequest,
-};
+  request,
+  addTask
+}
