@@ -6,6 +6,7 @@ const server = require('../server');
 const fetch = require('node-fetch');
 const { truncate } = require('../todo');
 const nock = require('nock');
+const FormData = require('form-data');
 
 describe('todos', () => {
   let connection;

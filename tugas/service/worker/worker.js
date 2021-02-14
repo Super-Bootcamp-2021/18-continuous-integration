@@ -48,11 +48,30 @@ async function remove(id) {
   return worker;
 }
 
+/**
+ * truncate database
+ * @returns {Promise<boolean>} boolean
+ */
+async function truncate() {
+  const entities = getConnection().entityMetadatas;
+
+  for (const entity of entities) {
+    const repository = await getConnection().getRepository(entity.name); // Get repository
+    try {
+      await repository.clear(); // Clear each entity table's content
+    } catch (error) {
+      return false;
+    }
+  }
+  return true;
+}
+
 module.exports = {
   register,
   list,
   remove,
   info,
+  truncate,
   ERROR_REGISTER_DATA_INVALID,
   ERROR_WORKER_NOT_FOUND,
 };
