@@ -2,7 +2,6 @@ const orm = require('../lib/orm');
 const storage = require('../lib/storage');
 const bus = require('../lib/bus');
 const { WorkerSchema } = require('../worker/worker.model');
-const { config } = require('../config');
 const workerServer = require('../worker/server');
 const { truncate } = require('../worker/worker');
 const FormData = require('form-data');
