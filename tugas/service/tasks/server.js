@@ -63,7 +63,7 @@ function run(callback) {
           respond(404);
       }
     } catch (err) {
-      respond(500, 'unkown server error');
+      respond(500, 'unkown sss error');
     }
   });
 

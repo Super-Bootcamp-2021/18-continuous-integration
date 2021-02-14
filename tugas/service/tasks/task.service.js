@@ -26,7 +26,7 @@ function addSvc(req, res) {
   function abort() {
     req.unpipe(busboy);
     if (!req.aborted) {
-      res.statusCode = 500;
+      res.statusCode = 405;
       res.write('internal server error');
       res.end();
     }
