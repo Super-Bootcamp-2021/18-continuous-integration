@@ -10,7 +10,6 @@ const FormData = require('form-data');
 const fs = require('fs');
 const { truncate } = require('../tasks/task');
 const http = require('http');
-const { isString } = require('util');
 
 function request(options, form = null) {
   return new Promise((resolve, reject) => {
