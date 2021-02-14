@@ -29,9 +29,6 @@ jobs:
           - 5432:5432
       minio:
         image: bitnami/minio:latest
-        credentials:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
         env:
           MINIO_ROOT_USER: ${{ secrets.MINIO_ACCESS_KEY }}
           MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_SECRET_KEY }}
@@ -39,9 +36,6 @@ jobs:
           - 9000:9000
       nats:
         image: nats
-        credentials:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
         ports:
           - 4222:4222
 
