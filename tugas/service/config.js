@@ -17,9 +17,9 @@ const defaultConfig = {
   },
   server: {
     port: {
-      worker: 10,
-      task: 20,
-      performance: 30,
+      worker: 80,
+      task: 81,
+      performance: 82,
     },
   },
 };
