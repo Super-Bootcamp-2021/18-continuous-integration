@@ -34,6 +34,7 @@ describe('Worker', () => {
       console.error('message bus connection failed');
     }
     workerServer.run();
+    taskServer.run();
   });
   beforeEach(async () => {
     await truncate();
@@ -43,6 +44,7 @@ describe('Worker', () => {
     await connection.close();
     bus.close();
     workerServer.stop();
+    taskServer.stop();
   });
 
   it('add task', async () => {
