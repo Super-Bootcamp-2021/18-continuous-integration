@@ -11,6 +11,9 @@ const { truncate } = require('../worker/worker');
 const http = require('http');
 const path = require('path');
 
+const querystring = require('querystring');
+const ERROR_WORKER_NOT_FOUND = 'pekerja tidak ditemukan';
+
 function request(options, form = null) {
   return new Promise((resolve, reject) => {
     const req = http.request(options, (res) => {
@@ -31,6 +34,7 @@ function request(options, form = null) {
     req.on('error', (error) => {
       console.error(error);
     });
+
     if (form) {
       form.pipe(req);
       req.on('response', function (res) {
@@ -59,8 +63,8 @@ describe('worker', () => {
     }
     try {
       await storage.connect('task-manager', {
-        endPoint: '0.0.0.0',
-        port: 9000,
+        endPoint: '127.0.0.1',
+        port: 1111,
         useSSL: false,
         accessKey: 'minio',
         secretKey: '12345678',
@@ -75,9 +79,9 @@ describe('worker', () => {
     }
     workerServer.run();
   });
-  beforeEach(async () => {
-    await truncate();
-  });
+  // beforeEach(async () => {
+  //   await truncate();
+  // });
   afterAll(async () => {
     await truncate();
     await connection.close();
@@ -85,24 +89,9 @@ describe('worker', () => {
     workerServer.stop();
   });
 
-  describe('worker', () => {
-    it('get worker', async () => {
-      const options = {
-        hostname: 'localhost',
-        port: 7001,
-        path: '/list',
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
+  describe('worker', () => {    
 
-      const response = await request(options);
-      const data = JSON.parse(response);
-      expect(data).toHaveLength(0);
-    });
-
-    it('add worker', async () => {
+    it('register worker', async () => {
       const form = new FormData();
       form.append('name', 'Moh. Ilham Burhanuddin');
       form.append('age', 23);
@@ -129,12 +118,12 @@ describe('worker', () => {
       expect(data.name).toBe('Moh. Ilham Burhanuddin');
     });
 
-    it.skip('delete worker', async () => {
+    it('list worker', async () => {
       const options = {
         hostname: 'localhost',
         port: 7001,
-        path: '/remove?id=1',
-        method: 'DELETE',
+        path: '/list',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -142,7 +131,39 @@ describe('worker', () => {
 
       const response = await request(options);
       const data = JSON.parse(response);
-      expect(data).toHaveLength(0);
+      expect(data).toHaveLength(1);
+    });
+
+    it('remove worker', async () => {
+      const getoptions = {
+        hostname: 'localhost',
+        port: 7001,
+        path: '/list',
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+
+      const getdata = await request(getoptions);
+      const id = JSON.parse(getdata)[0];
+      const postData = querystring.stringify({
+        'id': id.id
+      });
+
+      const options = {
+        hostname: 'localhost',
+        port: 7001,
+        path: `/remove?${postData}`,
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+      };
+
+      const response = await request(options);
+      const result = JSON.parse(response);
+      expect(result).toStrictEqual(JSON.parse(getdata)[0]);
     })
   });
 });
