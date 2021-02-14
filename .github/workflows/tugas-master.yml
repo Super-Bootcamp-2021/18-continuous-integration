@@ -26,6 +26,27 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
+      minio:
+        image: bitnami/minio:latest
+        env:
+          MINIO_ROOT_USER: minioadmin
+          MINIO_ROOT_PASSWORD: minioadmin
+        ports:
+          - 9000:9000
+        options: --name minio-server
+      nats:
+        image: nats
+        ports:
+          - 4222:4222
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
           
     runs-on: ubuntu-latest
     defaults:
@@ -33,10 +54,10 @@ jobs:
         working-directory: ./tugas
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js 12
+    - name: Use Node.js 14
       uses: actions/setup-node@v1
       with:
-        node-version: 12
+        node-version: 14
     - name: Cache node modules
       uses: actions/cache@v2
       env:
