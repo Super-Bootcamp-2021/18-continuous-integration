@@ -5,7 +5,7 @@ const defaultConfig = {
     type: 'postgres',
     host: 'localhost',
     port: 5432,
-    username: 'masdimya',
+    username: 'postgres',
     password: '1234567890',
     database: 'sanbercode2',
   },
