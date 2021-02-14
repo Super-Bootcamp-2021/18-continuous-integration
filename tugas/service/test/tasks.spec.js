@@ -22,17 +22,17 @@ describe('task', () => {
         config.database
       );
     } catch (err) {
-      console.error(err, 'database SATU connection failed');
+      console.error('database connection failed');
     }
     try {
       await storage.connect('task-manager', config.minio);
     } catch (err) {
-      console.error(err, 'object storage DUA connection failed');
+      console.error('object storage connection failed');
     }
     try {
       await bus.connect();
     } catch (err) {
-      console.error(err, 'message bus TIGA connection failed');
+      console.error('message bus connection failed');
     }
     workerServer.run();
     taskServer.run();
