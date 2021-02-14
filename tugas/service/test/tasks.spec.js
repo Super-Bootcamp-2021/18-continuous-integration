@@ -178,7 +178,7 @@ describe('worker', () => {
 
       const formTask = new FormData();
       formTask.append('job', 'makan');
-      formTask.append('assignee_id', worker?.id);
+      formTask.append('assignee_id', worker.id);
       formTask.append('attachment', fs.createReadStream('assets/nats.png'));
 
       const resp = await new Promise((resolve, reject) => {
@@ -236,7 +236,7 @@ describe('worker', () => {
 
       const formTask = new FormData();
       formTask.append('job', 'makan');
-      formTask.append('assignee_id', worker?.id);
+      formTask.append('assignee_id', worker.id);
       formTask.append('attachment', fs.createReadStream('assets/nats.png'));
 
       const resp = await new Promise((resolve, reject) => {
