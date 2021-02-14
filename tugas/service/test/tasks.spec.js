@@ -109,10 +109,10 @@ describe('Task Service', () => {
   });
 
   describe('Task List', () => {
-    it.only('get task list', async () => {
+    it('get task list', async () => {
       const response = JSON.parse(await req('http://localhost:7002/list'));
-      // const data = JSON.parse(response.data);
-      expect(response).toBe('a');
+      const data = JSON.parse(response.data);
+      expect(data).toHaveLength(1);
     });
 
     it('add new task', async () => {
