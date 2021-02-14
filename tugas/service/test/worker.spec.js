@@ -164,6 +164,31 @@ describe('worker', () => {
       expect(result).toStrictEqual(data);
     });
 
+    it('photo worker', async () => {
+      const get_worker = await request({
+        hostname: 'localhost',
+        port: 7001,
+        path: '/list',
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = JSON.parse(get_worker)[0];
+
+      const response = await request({
+        hostname: 'localhost',
+        port: 7001,
+        path: `/photo/${data.photo}`,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
+
+      expect(response).not.toBeUndefined();
+    });
+
     it('remove worker', async () => {
       const getoptions = {
         hostname: 'localhost',
