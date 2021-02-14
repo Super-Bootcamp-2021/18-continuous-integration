@@ -55,6 +55,7 @@ async function remove(id) {
 async function truncate() {
   const entities = getConnection().entityMetadatas;
 
+  // eslint-disable-next-line no-unused-vars
   for (const entity of entities) {
     const repository = await getConnection().getRepository('Worker'); // Get repository
     try {

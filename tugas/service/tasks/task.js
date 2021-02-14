@@ -64,6 +64,7 @@ function list() {
 async function truncate() {
   const entities = getConnection().entityMetadatas;
 
+  // eslint-disable-next-line no-unused-vars
   for (const entity of entities) {
     const repository = await getConnection().getRepository('Task'); // Get repository
     try {
@@ -83,5 +84,5 @@ module.exports = {
   list,
   ERROR_TASK_DATA_INVALID,
   ERROR_TASK_NOT_FOUND,
-  truncate
+  truncate,
 };

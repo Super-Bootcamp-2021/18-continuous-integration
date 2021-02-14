@@ -2,8 +2,8 @@
 const { connect } = require('../../lib/orm');
 const { TaskSchema } = require('../../tasks/task.model');
 const { WorkerSchema } = require('../../worker/worker.model');
-const workerModel = require("../../worker/worker");
-const taskModel = require("../../tasks/task");
+const workerModel = require('../../worker/worker');
+const taskModel = require('../../tasks/task');
 
 const bus = require('../../lib/bus');
 const storage = require('../../lib/storage');
@@ -13,16 +13,15 @@ const workerServer = require('../../worker/server');
 
 const fs = require('fs');
 const path = require('path');
-const http = require("http");
+const http = require('http');
 const FormData = require('form-data');
-const { truncate } = require('../../tasks/task');
 const task = require('../../tasks/task');
 
 async function workerServerSetup() {
   try {
     await storage.connect('photo', config.minio);
   } catch (err) {
-    console.error('object storage connection failed',err);
+    console.error('object storage connection failed', err);
   }
   workerServer.run();
 }
@@ -31,7 +30,7 @@ async function taskServerSetup() {
   try {
     await storage.connect('attachment', config.minio);
   } catch (err) {
-    console.error('object storage connection failed',err);
+    console.error('object storage connection failed', err);
   }
   taskServer.run();
 }
@@ -39,13 +38,13 @@ async function taskServerSetup() {
 async function initWorkerData() {
   try {
     const form = new FormData();
-    const pathFile = path.resolve(__dirname, "../worker/profile.jpeg")
+    const pathFile = path.resolve(__dirname, '../worker/profile.jpeg');
     const file = fs.createReadStream(pathFile);
-    form.append("name","budiman");
-    form.append("address","jakarta");
-    form.append("age",20);
-    form.append("bio","suka olahraga");
-    form.append("photo",file);
+    form.append('name', 'budiman');
+    form.append('address', 'jakarta');
+    form.append('age', 20);
+    form.append('bio', 'suka olahraga');
+    form.append('photo', file);
 
     const response = await new Promise((resolve, reject) => {
       form.submit('http://localhost:7001/register', function (err, res) {
@@ -69,112 +68,106 @@ async function initWorkerData() {
 }
 
 async function initTaskData(workerId) {
-    try {
-        const form = new FormData();
-        const pathFile = path.resolve(__dirname, "./file_test.txt")
-        const file = fs.createReadStream(pathFile);
-        const test = {
-          job:"jual geprek",
-          assignee_id:workerId,
-          attachment:file
+  try {
+    const form = new FormData();
+    const pathFile = path.resolve(__dirname, './file_test.txt');
+    const file = fs.createReadStream(pathFile);
+    const test = {
+      job: 'jual geprek',
+      assignee_id: workerId,
+      attachment: file,
+    };
+    form.append('job', test.job);
+    form.append('assignee_id', test.assignee_id);
+    form.append('attachment', test.attachment);
+
+    const response = await new Promise((resolve, reject) => {
+      form.submit('http://localhost:7002/add', function (err, res) {
+        if (err) {
+          reject(err);
         }
-        form.append("job",test.job);
-        form.append("assignee_id",test.assignee_id);
-        form.append("attachment",test.attachment);
-  
-        const response = await new Promise((resolve, reject) => {
-          form.submit('http://localhost:7002/add', function (err, res) {
-            if (err) {
-              reject(err);
-            }
-            let data = '';
-            res.on('data', (chunk) => {
-              data += chunk.toString();
-            });
-            res.on('end', () => {
-              const result = JSON.parse(data);
-              resolve(result);
-            });
-          });
+        let data = '';
+        res.on('data', (chunk) => {
+          data += chunk.toString();
         });
-        return response;
-    } catch (error) {
-      console.log(eror);
-    }
+        res.on('end', () => {
+          const result = JSON.parse(data);
+          resolve(result);
+        });
+      });
+    });
+    return response;
+  } catch (error) {
+    console.log(eror);
   }
+}
 
 function request(options) {
-    return new Promise((resolve, reject) => {
-        const req = http.request(options, (res) => {
-            let data = '';
-          
-            res.on('data', (chunk) => {
-                data += chunk.toString();
-            });
-            res.on('end', () => {
-                let result;
-                try {
-                    result = JSON.parse(data);
-                } catch (error) {
-                    result = data;
-                }
-                resolve({code:res.statusCode , data:result});
-            });
-            res.on('error', (err) => {
-                reject((err && err.message) || err.toString());
-            });
-        });
-        req.on('error', (error) => {
-            console.error(error);
-        });
-        req.end();
+  return new Promise((resolve, reject) => {
+    const req = http.request(options, (res) => {
+      let data = '';
+
+      res.on('data', (chunk) => {
+        data += chunk.toString();
+      });
+      res.on('end', () => {
+        let result;
+        try {
+          result = JSON.parse(data);
+        } catch (error) {
+          result = data;
+        }
+        resolve({ code: res.statusCode, data: result });
+      });
+      res.on('error', (err) => {
+        reject((err && err.message) || err.toString());
+      });
     });
+    req.on('error', (error) => {
+      console.error(error);
+    });
+    req.end();
+  });
 }
 
 describe('Task Add', () => {
   let connection;
-  
 
   beforeAll(async () => {
-     //orm
+    //orm
     try {
-      connection = await connect([TaskSchema,WorkerSchema], config.pg);
+      connection = await connect([TaskSchema, WorkerSchema], config.pg);
     } catch (err) {
       console.log(config.pg);
-      console.error('database connection failed',err);
+      console.error('database connection failed', err);
     }
 
     //nats
     try {
       await bus.connect();
     } catch (err) {
-      console.error('message bus connection failed',err);
+      console.error('message bus connection failed', err);
     }
 
     await workerServerSetup();
     await taskServerSetup();
-    
   });
 
   afterAll(async () => {
-    
     await taskModel.truncate();
     await workerModel.truncate();
     await connection.close();
     bus.close();
     workerServer.stop();
     taskServer.stop();
-
   });
 
-
-  describe('cancel task',  () => {
-
+  describe('cancel task', () => {
     let workerData;
-    beforeEach(async () =>{
+    beforeEach(async () => {
       workerData = await initWorkerData();
       taskData = await initTaskData(workerData.id);
-    })
+    });
 
     it('should success cancel task', async () => {
       const options = {
@@ -183,47 +176,45 @@ describe('Task Add', () => {
         path: `/cancel?id=${taskData.id}`,
         method: 'PUT',
         headers: {
-            'Content-Type': 'application/json',
+          'Content-Type': 'application/json',
         },
       };
       const response = await request(options);
 
       expect(response.code).toBe(200);
-      expect(response.data).toHaveProperty('cancelled',true);
-
+      expect(response.data).toHaveProperty('cancelled', true);
     });
 
     it('should error not found parameter id', async () => {
-        const options = {
-          hostname: 'localhost',
-          port: 7002,
-          path: `/cancel`,
-          method: 'PUT',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-        };
-        const response = await request(options);
-  
-        expect(response.code).toBe(401);
-        expect(response.data).toBe('parameter id tidak ditemukan');
+      const options = {
+        hostname: 'localhost',
+        port: 7002,
+        path: `/cancel`,
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      const response = await request(options);
+
+      expect(response.code).toBe(401);
+      expect(response.data).toBe('parameter id tidak ditemukan');
     });
 
     it('should error task not found', async () => {
-        const options = {
-          hostname: 'localhost',
-          port: 7002,
-          path: `/cancel?id=9000`,
-          method: 'PUT',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-        };
-        const response = await request(options);
-  
-        expect(response.code).toBe(404);
-        expect(response.data).toBe(task.ERROR_TASK_NOT_FOUND);
-    });
+      const options = {
+        hostname: 'localhost',
+        port: 7002,
+        path: `/cancel?id=9000`,
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      const response = await request(options);
 
+      expect(response.code).toBe(404);
+      expect(response.data).toBe(task.ERROR_TASK_NOT_FOUND);
+    });
   });
 });
