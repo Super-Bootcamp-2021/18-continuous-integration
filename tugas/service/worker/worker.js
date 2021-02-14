@@ -48,11 +48,24 @@ async function remove(id) {
   return worker;
 }
 
+async function truncate() {
+  const repository = getConnection().getRepository('Worker');
+
+  try {
+    await repository.delete({});
+    await repository.query(`ALTER TABLE workers AUTO_INCREMENT = 1`);
+  } catch (error) {
+    return false;
+  }
+  return true;
+}
+
 module.exports = {
   register,
   list,
   remove,
   info,
+  truncate,
   ERROR_REGISTER_DATA_INVALID,
   ERROR_WORKER_NOT_FOUND,
 };
