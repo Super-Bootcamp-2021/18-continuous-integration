@@ -37,11 +37,11 @@ jobs:
         ports:
           - 9000:9000
       nats:
-        image: nats
+        image: nats:latest
         env:
           tm_nats__port: ${{ secrets.NATS_PORT }}
         ports:
-          - ${{ secrets.NATS_PORT }}:${{ secrets.NATS_PORT }}
+          - 4222:4222
   
     runs-on: ubuntu-latest
     env:
