@@ -69,6 +69,7 @@ jobs:
         #   MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_SECRET_KEY }}
         ports:
           - 9000:9000
+        options: --name minio-server
       nats:
         image: nats
         ports:
