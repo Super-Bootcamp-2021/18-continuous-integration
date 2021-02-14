@@ -140,14 +140,14 @@ describe('Task Add', () => {
     try {
       connection = await connect([TaskSchema,WorkerSchema], config.pg);
     } catch (err) {
-      console.error('database connection failed');
+      console.error('database connection failed',err);
     }
 
     //nats
     try {
       await bus.connect();
     } catch (err) {
-      console.error('message bus connection failed');
+      console.error('message bus connection failed',err);
     }
 
     await workerServerSetup();
