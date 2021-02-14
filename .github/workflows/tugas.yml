@@ -10,6 +10,10 @@ on:
 jobs:
   build:
     services:
+      nats:
+        image: nats
+        ports:
+          - 4222:4222
       redis:
         image: redis
         ports:
