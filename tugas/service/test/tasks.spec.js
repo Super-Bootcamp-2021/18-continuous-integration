@@ -43,6 +43,8 @@ describe('task', () => {
     await addTask();
   });
   afterAll(async () => {
+    await truncate();
+
     await connection.close();
     bus.close();
     workerServer.stop();
