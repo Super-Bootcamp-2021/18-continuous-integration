@@ -267,6 +267,10 @@ describe('worker', () => {
       const response = await request(options);
       const task = JSON.parse(response);
       expect(task.cancelled).toBeThruty;
+      await connection.close();
+      bus.close();
+      workerServer.stop();
+      taskServer.stop();
     });
   });
 });
