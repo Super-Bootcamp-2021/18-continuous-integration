@@ -43,7 +43,7 @@ function request(options, form = null) {
   });
 }
 
-describe('worker', () => {
+describe('Task-Service', () => {
   let connection;
   beforeAll(async () => {
     try {
@@ -88,69 +88,51 @@ describe('worker', () => {
     taskServer.stop();
   });
 
-  describe('worker', () => {
-    it('get worker', async () => {
-      const options = {
-        hostname: 'localhost',
-        port: 7002,
-        path: '/list',
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
+  it('add task', async () => {
+    const form = new FormData();
+    form.append('name', 'budi');
+    form.append('age', 20);
+    form.append('bio', 'test');
+    form.append('address', 'jkt');
+    form.append('photo', fs.createReadStream('assets/nats.png'));
 
-      const response = await request(options);
-      const data = JSON.parse(response);
-      expect(data).toHaveLength(0);
-    });
-
-    it('add task', async () => {
-      const form = new FormData();
-      form.append('name', 'budi');
-      form.append('age', 20);
-      form.append('bio', 'test');
-      form.append('address', 'jkt');
-      form.append('photo', fs.createReadStream('assets/nats.png'));
-
-      const res = await new Promise((resolve, reject) => {
-        form.submit('http://localhost:7001/register', function (err, res) {
-          if (err) {
-            reject(err);
-          }
-          let data = '';
-          res.on('data', (chunk) => {
-            data += chunk.toString();
-          });
-          res.on('end', () => {
-            resolve(data);
-          });
+    const res = await new Promise((resolve, reject) => {
+      form.submit('http://localhost:7001/register', function (err, res) {
+        if (err) {
+          reject(err);
+        }
+        let data = '';
+        res.on('data', (chunk) => {
+          data += chunk.toString();
+        });
+        res.on('end', () => {
+          resolve(data);
         });
       });
-      const worker = JSON.parse(res);
+    });
+    const worker = JSON.parse(res);
 
-      const formTask = new FormData();
-      formTask.append('job', 'ngoding');
-      formTask.append('assignee_id', worker.id);
-      formTask.append('attachment', fs.createReadStream('assets/nats.png'));
+    const formTask = new FormData();
+    formTask.append('job', 'ngoding');
+    formTask.append('assignee_id', worker.id);
+    formTask.append('attachment', fs.createReadStream('assets/nats.png'));
 
-      const response = await new Promise((resolve, reject) => {
-        formTask.submit('http://localhost:7002/add', function (err, res) {
-          if (err) {
-            reject(err);
-          }
-          let data = '';
-          res.on('data', (chunk) => {
-            data += chunk.toString();
-          });
-          res.on('end', () => {
-            resolve(data);
-          });
+    const response = await new Promise((resolve, reject) => {
+      formTask.submit('http://localhost:7002/add', function (err, res) {
+        if (err) {
+          reject(err);
+        }
+        let data = '';
+        res.on('data', (chunk) => {
+          data += chunk.toString();
+        });
+        res.on('end', () => {
+          resolve(data);
         });
       });
-
-      const data = JSON.parse(response);
-      expect(data.job).toBe('ngoding');
     });
+
+    const data = JSON.parse(response);
+    expect(data.job).toBe('ngoding');
   });
 });
