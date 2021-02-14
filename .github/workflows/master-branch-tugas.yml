@@ -1,7 +1,7 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Node.js CI
+name: Node.js CI branch master
 
 on:
   push:
@@ -17,8 +17,8 @@ jobs:
         image: postgres:11
         # Provide the password for postgres
         env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: database
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
@@ -27,11 +27,27 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
+      minio:
+        image: bitnami/minio:latest
+        env:
+          MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
+          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+        ports:
+          - 9000:9000
+        options: --name minio-server
+      nats:
+        image: nats
+        ports:
+          - 4222:4222
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
 
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./materi
+        working-directory: ./tugas
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js 12
@@ -50,5 +66,9 @@ jobs:
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
-    - run: npm i
-    - run: npm test
+    - name: Run Install Dependencies
+      run: npm i
+    - name: Run Test Linter
+      run: npm run lint
+    - name: Run Integration Test
+      run: npm test
