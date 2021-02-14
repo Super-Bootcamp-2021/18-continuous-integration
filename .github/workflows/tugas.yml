@@ -6,7 +6,7 @@ name: tugas
 on:
   push:
     branches:
-      - 'issue-7'
+      - 'issue-*'
   pull_request:
     branches: [ develop ]
 
