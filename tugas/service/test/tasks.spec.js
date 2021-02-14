@@ -18,13 +18,7 @@ describe('pekerjaan', () => {
     connection = await connect([WorkerSchema, TaskSchema], config.database);
     server.run();
     bus.connect();
-    storage.connect('task-manager', {
-      endPoint: config.objectStorage?.endPoint,
-      port: config.objectStorage?.port,
-      useSSL: config.objectStorage?.useSSL,
-      accessKey: config.objectStorage?.accessKey,
-      secretKey: config.objectStorage?.secretKey,
-    });
+    storage.connect('task-manager', config.objectStorage);
   });
 
   afterAll(async () => {
@@ -36,7 +30,7 @@ describe('pekerjaan', () => {
   describe('daftar pekerjaan', () => {
     it('menambah pekerjaan baru', async () => {
       truncate();
-      nock('http://localhost:9028').get('/info?id=1').reply(200, {
+      nock('http://localhost:7001').get('/info?id=1').reply(200, {
         id: 1,
         name: 'budi',
         age: '45',
@@ -90,7 +84,7 @@ describe('pekerjaan', () => {
     });
 
     it('mendapatkan daftar dari semua pekerjaan', async () => {
-      nock('http://localhost:9028').get('/info?id=1').reply(200, {
+      nock('http://localhost:7001').get('/info?id=1').reply(200, {
         id: 1,
         name: 'budi',
         age: '45',
@@ -186,7 +180,6 @@ describe('pekerjaan', () => {
             });
 
             res.on('end', () => {
-              console.log(data);
               const result = JSON.parse(data);
               resolve(result);
             });
@@ -221,7 +214,6 @@ describe('pekerjaan', () => {
             });
 
             res.on('end', () => {
-              console.log(data);
               const result = JSON.parse(data);
               resolve(result);
             });
