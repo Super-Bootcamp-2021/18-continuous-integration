@@ -9,8 +9,6 @@ const FormData = require('form-data');
 const fs = require('fs');
 const { truncate } = require('../worker/worker');
 const http = require('http');
-const fetch = require('node-fetch');
-const { URLSearchParams } = require('url');
 
 const ERROR_WORKER_NOT_FOUND = 'pekerja tidak ditemukan';
 
@@ -188,21 +186,7 @@ describe('Worker Service', () => {
 
         const getAllData = await request(options);
         const allData = JSON.parse(getAllData);
-        console.log(allData);
         expect(allData).toHaveLength(3);
-      });
-    });
-
-    describe('Mencari info pekerja', () => {
-      it('bisa mencari info pekerja menggunakan ID', async () => {
-        const get = await fetch(
-          'http://localhost:7001/info?id=260',
-          {
-            method: 'get',
-            headers: { 'Content-type': 'application/json' },
-          }
-        );
-        console.log(get);
       });
     });
   });
