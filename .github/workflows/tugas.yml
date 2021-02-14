@@ -30,11 +30,13 @@ jobs:
         ports:
           - 5432:5432
       minio:
-        image: bitnami/minio:latest
+        image: store/minio/minio:RELEASE.2020-12-29T23-29-29Z
         env:
           MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
           MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
-          
+        volumes:
+          - ${{ github.workspace }}:/data
+        options: --name=minio --health-cmd
         ports:
           - 9000:9000
       nats:
