@@ -5,14 +5,14 @@ const bus = require('../lib/bus');
 const { WorkerSchema } = require('../worker/worker.model');
 const { TaskSchema } = require('../tasks/task.model');
 const workerServer = require('../worker/server');
-const { truncate } = require('../worker/worker');
+const { truncate, ERROR_WORKER_NOT_FOUND } = require('../worker/worker');
 const FormData = require('form-data');
 const fs = require('fs');
 const http = require('http');
 const path = require('path');
 
 const querystring = require('querystring');
-const ERROR_WORKER_NOT_FOUND = 'pekerja tidak ditemukan';
+const { config } = require('../config');
 
 function request(options, form = null) {
   return new Promise((resolve, reject) => {
@@ -46,29 +46,19 @@ function request(options, form = null) {
   });
 }
 
-describe('worker', () => {
+describe('Service Worker', () => {
   let connection;
   beforeAll(async () => {
     try {
-      connection = await orm.connect([WorkerSchema, TaskSchema], {
-        type: 'postgres',
-        host: 'localhost',
-        port: 5432,
-        username: 'postgres',
-        password: 'postgres',
-        database: 'sanbercode',
-      });
+      connection = await orm.connect(
+        [WorkerSchema, TaskSchema],
+        config.database
+      );
     } catch (err) {
       console.error('database connection failed');
     }
     try {
-      await storage.connect('task-manager', {
-        endPoint: '127.0.0.1',
-        port: 9000,
-        useSSL: false,
-        accessKey: 'minioadmin',
-        secretKey: 'minioadmin',
-      });
+      await storage.connect('task-manager', config.minio);
     } catch (err) {
       console.error('object storage connection failed');
     }
@@ -89,7 +79,7 @@ describe('worker', () => {
     workerServer.stop();
   });
 
-  describe('worker', () => {
+  describe('Data Handling', () => {
     it('register worker', async () => {
       const form = new FormData();
       form.append('name', 'Moh. Ilham Burhanuddin');
@@ -220,7 +210,9 @@ describe('worker', () => {
       const result = JSON.parse(response);
       expect(result).toStrictEqual(JSON.parse(getdata)[0]);
     });
+  });
 
+  describe('Error Handling', () => {
     it('error register worker (data registrasi pekerja tidak lengkap)', async () => {
       const form = new FormData();
       form.append('name', 'Moh. Ilham Burhanuddin');
