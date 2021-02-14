@@ -107,8 +107,8 @@ describe('worker', () => {
 
     it('add task', async () => {
       const form = new FormData();
-      form.append('name', 'user 1');
-      form.append('age', 29);
+      form.append('name', 'budi');
+      form.append('age', 20);
       form.append('bio', 'test');
       form.append('address', 'jkt');
       form.append('photo', fs.createReadStream('assets/nats.png'));
@@ -130,7 +130,7 @@ describe('worker', () => {
       const worker = JSON.parse(res);
 
       const formTask = new FormData();
-      formTask.append('job', 'makan');
+      formTask.append('job', 'ngoding');
       formTask.append('assignee_id', worker.id);
       formTask.append('attachment', fs.createReadStream('assets/nats.png'));
 
@@ -150,128 +150,7 @@ describe('worker', () => {
       });
 
       const data = JSON.parse(response);
-      expect(data.job).toBe('makan');
-    });
-
-    it('task done', async () => {
-      const form = new FormData();
-      form.append('name', 'user 1');
-      form.append('age', 29);
-      form.append('bio', 'test');
-      form.append('address', 'jkt');
-      form.append('photo', fs.createReadStream('assets/nats.png'));
-
-      const res = await new Promise((resolve, reject) => {
-        form.submit('http://localhost:7001/register', function (err, res) {
-          if (err) {
-            reject(err);
-          }
-          let data = '';
-          res.on('data', (chunk) => {
-            data += chunk.toString();
-          });
-          res.on('end', () => {
-            resolve(data);
-          });
-        });
-      });
-      const worker = JSON.parse(res);
-
-      const formTask = new FormData();
-      formTask.append('job', 'makan');
-      formTask.append('assignee_id', worker.id);
-      formTask.append('attachment', fs.createReadStream('assets/nats.png'));
-
-      const resp = await new Promise((resolve, reject) => {
-        formTask.submit('http://localhost:7002/add', function (err, res) {
-          if (err) {
-            reject(err);
-          }
-          let data = '';
-          res.on('data', (chunk) => {
-            data += chunk.toString();
-          });
-          res.on('end', () => {
-            resolve(data);
-          });
-        });
-      });
-
-      const data = JSON.parse(resp);
-      const options = {
-        hostname: 'localhost',
-        port: 7002,
-        path: `/done?id=${data.id}`,
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
-      const response = await request(options);
-      const task = JSON.parse(response);
-      expect(task.done).toBeThruty;
-    });
-    it('task cancel', async () => {
-      const form = new FormData();
-      form.append('name', 'user 1');
-      form.append('age', 29);
-      form.append('bio', 'test');
-      form.append('address', 'jkt');
-      form.append('photo', fs.createReadStream('assets/nats.png'));
-
-      const res = await new Promise((resolve, reject) => {
-        form.submit('http://localhost:7001/register', function (err, res) {
-          if (err) {
-            reject(err);
-          }
-          let data = '';
-          res.on('data', (chunk) => {
-            data += chunk.toString();
-          });
-          res.on('end', () => {
-            resolve(data);
-          });
-        });
-      });
-      const worker = JSON.parse(res);
-
-      const formTask = new FormData();
-      formTask.append('job', 'makan');
-      formTask.append('assignee_id', worker.id);
-      formTask.append('attachment', fs.createReadStream('assets/nats.png'));
-
-      const resp = await new Promise((resolve, reject) => {
-        formTask.submit('http://localhost:7002/add', function (err, res) {
-          if (err) {
-            reject(err);
-          }
-          let data = '';
-          res.on('data', (chunk) => {
-            data += chunk.toString();
-          });
-          res.on('end', () => {
-            resolve(data);
-          });
-        });
-      });
-
-      const data = JSON.parse(resp);
-      const options = {
-        hostname: 'localhost',
-        port: 7002,
-        path: `/cancel?id=${data.id}`,
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
-      const response = await request(options);
-      const task = JSON.parse(response);
-      expect(task.cancelled).toBeThruty;
-      await connection.close();
-      bus.close();
-      workerServer.stop();
-      taskServer.stop();
+      expect(data.job).toBe('ngoding');
     });
   });
 });
