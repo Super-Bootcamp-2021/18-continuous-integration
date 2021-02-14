@@ -72,4 +72,4 @@ jobs:
     - name: Run Test Linter
       run: npm run lint
     - name: Run Integration Test
-      run: npm test:tasks
+      run: npm run test:tasks
