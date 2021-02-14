@@ -5,3 +5,5 @@ file-storage
 docs
 .todorc
 .env
+.github/workflows/hadi.yml
+.github/workflows/pull-request-develop-testing.yml
