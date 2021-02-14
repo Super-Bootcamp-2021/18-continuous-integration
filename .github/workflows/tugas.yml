@@ -30,7 +30,7 @@ jobs:
         ports:
           - 5432:5432
       minio:
-        image: store/minio/minio:RELEASE.2020-12-29T23-29-29Z
+        image: bitnami/minio:latest
         env:
           MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
           MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
