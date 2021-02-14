@@ -36,7 +36,7 @@ jobs:
       server_server__port___task: 7002
     defaults:
       run:
-        working-directory: ./tugas/task
+        working-directory: ./tugas
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js 12
