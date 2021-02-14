@@ -1,11 +1,11 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: tugas
+name: task
 
 on:
-  pull_request:
-    branches: [ develop ]
+  push:
+    branches: [ task ]
 
 jobs:
   build:
@@ -16,15 +16,21 @@ jobs:
           - 4222:4222
       redis:
         image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
         ports:
           - 6379:6379
       minio:
-        image: minio
+        image: bitnami/minio:latest
         env:
           MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
           MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
         ports:
           - 9000:9000
+        options: --name minio-server
       postgres:
         image: postgres:11
         env:
@@ -43,17 +49,19 @@ jobs:
       tm_database__password: ${{ secrets.POSTGRES_PASSWORD }}
       tm_database__database: ${{ secrets.POSTGRES_DB }}
       tm_server__workerPort: ${{ secrets.WORKER_PORT }}
-      tm_server__taskPort: ${{ secrets.WORKER_PORT }}
-      tm_server__performancePort: ${{ secrets.WORKER_PORT }}
+      tm_server__taskPort: ${{ secrets.TASK_PORT }}
+      tm_server__performancePort: ${{ secrets.PERFORMANCE_PORT }}
+      tm_minio__accessKey: ${{ secrets.MINIO_ACCESS_KEY }}
+      tm_minio__secretKey: ${{ secrets.MINIO_SECRET_KEY }}
     defaults:
       run:
         working-directory: ./tugas
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js 12
+    - name: Use Node.js 14
       uses: actions/setup-node@v1
       with:
-        node-version: 12
+        node-version: 14
     - name: Cache node modules
       uses: actions/cache@v2
       env:
@@ -67,8 +75,8 @@ jobs:
           ${{ runner.os }}-build-
           ${{ runner.os }}-
     - name: Run Install Dependencies
-      run: npm i
+      run: npm ci
     - name: Run Test Linter
       run: npm run lint
     - name: Run Integration Test
-      run: npm test:worker
+      run: npm run test:tasks
