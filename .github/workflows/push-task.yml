@@ -41,8 +41,10 @@ jobs:
       ## add secret on settings-secret-add new secret e.g name=POSTGRES_PASSWORD value=mypassword
       server_database__password: ${{ secrets.POSTGRES_PASSWORD }}
       server_database__database: ${{ secrets.POSTGRES_DB }}
+      server_database__host: '0.0.0.0'
       server_minio__accesskey: ${{ secrets.MINIO_USER }}
       server_minio__secretkey: ${{ secrets.MINIO_PASSWORD }}
+      server_minio__endPoint: '0.0.0.0'
       server_server__port___task: 7002
       server_server__port___worker: 7001
     defaults:

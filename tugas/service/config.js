@@ -3,23 +3,23 @@ const rc = require('rc');
 const defaultConfig = {
   database: {
     type: 'postgres',
-    host: '0.0.0.0',
+    host: 'localhost',
     port: 5432,
     username: 'postgres',
     password: 'postgres',
     database: 'database',
   },
   minio: {
-    endPoint: '0.0.0.0',
+    endPoint: '127.0.0.1',
     port: 9000,
     accessKey: 'minioadmin',
     secretKey: 'minioadmin',
   },
   server: {
     port: {
-      worker: 7001,
-      task: 7002,
-      performance: 7003,
+      worker: 10,
+      task: 20,
+      performance: 30,
     },
   },
 };
