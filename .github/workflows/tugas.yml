@@ -51,15 +51,17 @@ jobs:
         ports:
           - 4222:4222
       minio:
-        image: lazybit/minio
-        ports:
-          - 9000:9000
+        image: minio/minio:latest
         env:
           MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
           MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
-        volumes:
-          - ${{ github.workspace }}/data:/data
-        options: --name=minio --health-cmd "curl http://localhost:9000/minio/health/live"
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 9000:9000
     runs-on: ubuntu-latest
     env:
       tm_serverWorker__port: 7001
@@ -123,15 +125,17 @@ jobs:
         ports:
           - 4222:4222
       minio:
-        image: lazybit/minio
-        ports:
-          - 9000:9000
+        image: minio/minio:latest
         env:
           MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
           MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
-        volumes:
-          - ${{ github.workspace }}/data:/data
-        options: --name=minio --health-cmd "curl http://localhost:9000/minio/health/live"
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 9000:9000
     runs-on: ubuntu-latest
     env:
       tm_serverTask__port: 7002
