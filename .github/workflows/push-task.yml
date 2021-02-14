@@ -56,7 +56,7 @@ jobs:
           ${{ runner.os }}-build-
           ${{ runner.os }}-
     - name: Run Install Dependencies
-      run: npm i
+      run: npm install
     - name: Run Test Linter
       run: npm run lint
     - name: Run Integration Test
