@@ -25,7 +25,6 @@ describe('Worker', () => {
     try {
       await storage.connect('task-manager', config.storage);
     } catch (err) {
-      console.error(err);
       console.error('object storage connection failed');
     }
     try {
