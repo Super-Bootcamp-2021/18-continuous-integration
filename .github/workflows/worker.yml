@@ -53,8 +53,8 @@ jobs:
       name: worker-env 
       cache-name: cache-node-modules
       ## add secret on settings-secret-add new secret e.g name=POSTGRES_PASSWORD value=mypassword
-      sanbercode2_database__password: ${{ secrets.POSTGRES_PASSWORD }}
-      sanbercode2_database__database: ${{ secrets.POSTGRES_DB }}
+      sanbercode_database__password: ${{ secrets.POSTGRES_PASSWORD }}
+      sanbercode_database__database: ${{ secrets.POSTGRES_DB }}
       # The hostname used to communicate with the Redis service container
       REDIS_HOST: redis
       # The default Redis port
