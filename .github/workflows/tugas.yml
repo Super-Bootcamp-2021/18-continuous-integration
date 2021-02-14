@@ -39,7 +39,7 @@ jobs:
       nats:
         image: nats
         env:
-          tm_redist__port: ${{ secrets.MINIO_ACCESS_KEY }}
+          tm_nats__port: ${{ secrets.NATS_PORT }}
         ports:
           - ${{ secrets.NATS_PORT }}:${{ secrets.NATS_PORT }}
   
