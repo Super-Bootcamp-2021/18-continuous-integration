@@ -27,4 +27,5 @@ function info(id) {
 
 module.exports = {
   info,
+  ERROR_WORKER_NOT_FOUND,
 };

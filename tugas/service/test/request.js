@@ -35,6 +35,35 @@ function request(options, form = null) {
   });
 }
 
+function requestOther(options, form = null) {
+  return new Promise((resolve, reject) => {
+    const req = http.request(options, (res) => {
+      let data = '';
+      res.on('data', (chunk) => {
+        data += chunk.toString();
+      });
+      res.on('error', (err) => {
+        console.error(err);
+        reject(err);
+      });
+      res.on('end', () => {
+        resolve(data);
+      });
+    });
+    req.on('error', (error) => {
+      console.error(error);
+    });
+    if (form) {
+      form.pipe(req);
+      req.on('response', function (res) {
+        console.log(res.statusCode);
+      });
+    } else {
+      req.end();
+    }
+  });
+}
+
 async function addTask() {
   const formWorker = new FormData();
   formWorker.append('name', 'user 1');
@@ -91,5 +120,6 @@ async function addTask() {
 
 module.exports = {
   request,
+  requestOther,
   addTask,
 };

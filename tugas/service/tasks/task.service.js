@@ -9,6 +9,7 @@ const {
   list,
   ERROR_TASK_DATA_INVALID,
   ERROR_TASK_NOT_FOUND,
+  ERROR_TASK_ALREADY_DONE,
 } = require('./task');
 const { saveFile, readFile, ERROR_FILE_NOT_FOUND } = require('../lib/storage');
 
@@ -119,6 +120,11 @@ async function doneSvc(req, res) {
   } catch (err) {
     if (err === ERROR_TASK_NOT_FOUND) {
       res.statusCode = 404;
+      res.write(err);
+      res.end();
+      return;
+    }else if (err === ERROR_TASK_ALREADY_DONE) {
+      res.statusCode = 400;
       res.write(err);
       res.end();
       return;

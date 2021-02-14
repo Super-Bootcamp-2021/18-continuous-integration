@@ -104,4 +104,5 @@ module.exports = {
   truncate,
   ERROR_TASK_DATA_INVALID,
   ERROR_TASK_NOT_FOUND,
+  ERROR_TASK_ALREADY_DONE
 };

@@ -7,14 +7,18 @@ const taskServer = require('../tasks/server');
 const workerServer = require('../worker/server');
 const { TaskSchema } = require('../tasks/task.model');
 const { WorkerSchema } = require('../worker/worker.model');
-const { truncate } = require('../tasks/task');
+const { truncate, ERROR_TASK_DATA_INVALID, ERROR_TASK_ALREADY_DONE, ERROR_TASK_NOT_FOUND } = require('../tasks/task');
 // const nock = require('nock');
-const { request, addTask } = require('./request');
+const { request, requestOther, addTask } = require('./request');
+const FormData = require('form-data');
+const fs = require('fs');
+const { ERROR_WORKER_NOT_FOUND } = require('../tasks/worker.client');
 
 describe('task', () => {
   let connection;
   let response;
   let data;
+  let options;
   beforeAll(async () => {
     try {
       connection = await orm.connect(
@@ -86,7 +90,7 @@ describe('task', () => {
         );
         dataTask = JSON.parse(response);
 
-        const options = {
+        options = {
           hostname: 'localhost',
           port: config.server.taskPort,
           path: `/done?id=${dataTask[0]['id']}`,
@@ -105,7 +109,7 @@ describe('task', () => {
         );
         dataTask = JSON.parse(response);
 
-        const options = {
+        options = {
           hostname: 'localhost',
           port: config.server.taskPort,
           path: `/cancel?id=${dataTask[0]['id']}`,
@@ -119,7 +123,7 @@ describe('task', () => {
         expect(data.cancelled).toBeTruthy();
       });
     });
-    describe.only('Attachment', () => {
+    describe('Attachment', () => {
       it('show attachment', async () => {
         const test = 'show attachment';
         expect(test).toBe('show attachment');
@@ -128,26 +132,112 @@ describe('task', () => {
   });
   describe('Error Handling', () => {
     it('form not completed', async () => {
-      const test = 'form not completed';
-      expect(test).toBe('form not completed');
+      const formTask = new FormData();
+      formTask.append('job', 'Makan');
+      // formTask.append('assignee_id', dataWorker.id);
+      formTask.append('attachment', fs.createReadStream('assets/makan.txt'));
+      const responseTask = await new Promise((resolve, reject) => {
+        formTask.submit(
+          `http://localhost:${config.server.taskPort}/add`,
+          function (err, res) {
+            if (err) {
+              reject(err);
+            }
+            let data = '';
+            res.on('data', (chunk) => {
+              data += chunk.toString();
+            });
+            res.on('end', () => {
+              resolve(data);
+            });
+          }
+        );
+      });
+      expect(responseTask).toBe(ERROR_TASK_DATA_INVALID);
     });
     it('failed to load task', async () => {
-      const test = 'failed to load task';
-      expect(test).toBe('failed to load task');
+      options = {
+        hostname: 'localhost',
+        port: config.server.taskPort,
+        path: `/done?id=2147483647`,
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      response = await requestOther(options);
+      expect(response).toBe(ERROR_TASK_NOT_FOUND);
     });
     it('failed to load worker', async () => {
-      const test = 'failed to load worker';
-      expect(test).toBe('failed to load worker');
+      const formTask = new FormData();
+      formTask.append('job', 'Makan');
+      // Maximum Integer Value 2,147,483,647
+      formTask.append('assignee_id', 2147483647);
+      formTask.append('attachment', fs.createReadStream('assets/makan.txt'));
+      const responseTask = await new Promise((resolve, reject) => {
+        formTask.submit(
+          `http://localhost:${config.server.taskPort}/add`,
+          function (err, res) {
+            if (err) {
+              reject(err);
+            }
+            let data = '';
+            res.on('data', (chunk) => {
+              data += chunk.toString();
+            });
+            res.on('end', () => {
+              resolve(data);
+            });
+          }
+        );
+      });
+      expect(responseTask).toBe(ERROR_WORKER_NOT_FOUND);
     });
 
     describe('Update Status', () => {
       it('failed to update status to be done', async () => {
-        const test = 'failed to update status to be done';
-        expect(test).toBe('failed to update status to be done');
+        response = await request(
+          `http://localhost:${config.server.taskPort}/list`
+        );
+        dataTask = JSON.parse(response);
+
+        options = {
+          hostname: 'localhost',
+          port: config.server.taskPort,
+          path: `/done?id=${dataTask[0]['id']}`,
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        };
+        response = await requestOther(options);
+        data = JSON.parse(response);
+        expect(data.done).toBeTruthy();
+
+        options = {
+          hostname: 'localhost',
+          port: config.server.taskPort,
+          path: `/done?id=${dataTask[0]['id']}`,
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        };
+        response = await requestOther(options);
+        expect(response).toBe(ERROR_TASK_ALREADY_DONE);
       });
       it('failed to update status to be cancelled', async () => {
-        const test = 'failed to update status to be cancelled';
-        expect(test).toBe('failed to update status to be cancelled');
+        options = {
+          hostname: 'localhost',
+          port: config.server.taskPort,
+          path: `/cancel?id=2147483647`,
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        };
+        response = await requestOther(options);
+        expect(response).toBe(ERROR_TASK_NOT_FOUND);
       });
     });
   });
