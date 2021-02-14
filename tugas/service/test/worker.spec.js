@@ -9,6 +9,9 @@ const FormData = require('form-data');
 const fs = require('fs');
 const { truncate } = require('../worker/worker');
 const http = require('http');
+const { config } = require('../config');
+
+const ERROR_WORKER_NOT_FOUND = 'pekerja tidak ditemukan';
 
 function request(options, form = null) {
   return new Promise((resolve, reject) => {
@@ -41,28 +44,28 @@ function request(options, form = null) {
   });
 }
 
-describe('worker', () => {
+describe('Worker Service', () => {
   let connection;
   beforeAll(async () => {
     try {
       connection = await orm.connect([WorkerSchema, TaskSchema], {
-        type: 'postgres',
-        host: 'localhost',
-        port: 5432,
-        username: 'postgres',
-        password: 'postgres',
-        database: 'sanbercode',
+        type: config.database?.type,
+        host: config.database?.host,
+        port: config.database?.port,
+        username: config.database?.username,
+        password: config.database?.password,
+        database: config.database?.database,
       });
     } catch (err) {
       console.error('database connection failed');
     }
     try {
       await storage.connect('task-manager', {
-        endPoint: '127.0.0.1',
-        port: 9000,
-        useSSL: false,
-        accessKey: 'minioadmin',
-        secretKey: 'minioadmin',
+        endPoint: config.minio?.endPoint,
+        port: config.minio?.port,
+        useSSL: config.minio?.useSSL,
+        accessKey: config.minio?.accessKey,
+        secretKey: config.minio?.secretKey,
       });
     } catch (err) {
       console.error('object storage connection failed');
@@ -74,9 +77,54 @@ describe('worker', () => {
     }
     workerServer.run();
   });
+
   beforeEach(async () => {
     await truncate();
+    const form = new FormData();
+    form.append('name', 'Andi');
+    form.append('age', 20);
+    form.append('bio', 'Cita-citaku ingin menjadi hokage');
+    form.append('address', 'Konohagakyre');
+    form.append('photo', fs.createReadStream('assets/test.jpg'));
+
+    await new Promise((resolve, reject) => {
+      form.submit('http://localhost:7001/register', function (err, res) {
+        if (err) {
+          reject(err);
+        }
+        let data = '';
+        res.on('data', (chunk) => {
+          data += chunk.toString();
+        });
+        res.on('end', () => {
+          resolve(data);
+        });
+      });
+    });
+
+    const form1 = new FormData();
+    form1.append('name', 'Budi');
+    form1.append('age', 17);
+    form1.append('bio', 'Ingin menguasai Bumi');
+    form1.append('address', 'Planet Mars');
+    form1.append('photo', fs.createReadStream('assets/test.jpg'));
+
+    await new Promise((resolve, reject) => {
+      form1.submit('http://localhost:7001/register', function (err, res) {
+        if (err) {
+          reject(err);
+        }
+        let data = '';
+        res.on('data', (chunk) => {
+          data += chunk.toString();
+        });
+        res.on('end', () => {
+          resolve(data);
+        });
+      });
+    });
   });
+
   afterAll(async () => {
     //await truncate();
     await connection.close();
@@ -84,8 +132,8 @@ describe('worker', () => {
     workerServer.stop();
   });
 
-  describe('worker', () => {
-    it('get worker', async () => {
+  describe('Melihat data pekerja', () => {
+    it('bisa mengambil data pekerja', async () => {
       const options = {
         hostname: 'localhost',
         port: 7001,
@@ -98,16 +146,18 @@ describe('worker', () => {
 
       const response = await request(options);
       const data = JSON.parse(response);
-      expect(data).toHaveLength(0);
+      expect(data).toHaveLength(2);
     });
+  });
 
-    it('add worker', async () => {
+  describe('Menambah data pekerja', () => {
+    it('bisa menambah data pekerja', async () => {
       const form = new FormData();
-      form.append('name', 'user 1');
-      form.append('age', 29);
-      form.append('bio', 'test');
-      form.append('address', 'jkt');
-      form.append('photo', fs.createReadStream('assets/nats.png'));
+      form.append('name', 'Cindi');
+      form.append('age', 21);
+      form.append('bio', 'Hidup seperti Larry');
+      form.append('address', 'Bikini Bottom');
+      form.append('photo', fs.createReadStream('assets/test.jpg'));
 
       const response = await new Promise((resolve, reject) => {
         form.submit('http://localhost:7001/register', function (err, res) {
@@ -123,9 +173,104 @@ describe('worker', () => {
           });
         });
       });
-
       const data = JSON.parse(response);
-      expect(data.name).toBe('user 1');
+      expect(data.name).toBe('Cindi');
+
+      const options = {
+        hostname: 'localhost',
+        port: 7001,
+        path: '/list',
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+
+      const getAllData = await request(options);
+      const allData = JSON.parse(getAllData);
+      expect(allData).toHaveLength(3);
+    });
+  });
+
+  describe('Mencari info data pekerja', () => {
+    it('bisa mencari info pekerja dengan ID', async () => {
+      const form = new FormData();
+      form.append('name', 'Cindi');
+      form.append('age', 21);
+      form.append('bio', 'Hidup seperti Larry');
+      form.append('address', 'Bikini Bottom');
+      form.append('photo', fs.createReadStream('assets/test.jpg'));
+
+      const response = await new Promise((resolve, reject) => {
+        form.submit('http://localhost:7001/register', function (err, res) {
+          if (err) {
+            reject(err);
+          }
+          let data = '';
+          res.on('data', (chunk) => {
+            data += chunk.toString();
+          });
+          res.on('end', () => {
+            resolve(data);
+          });
+        });
+      });
+      const data = JSON.parse(response);
+      expect(data.name).toBe('Cindi');
+
+      const options = {
+        hostname: 'localhost',
+        port: 7001,
+        path: `/info?id=${data.id}`,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+
+      const resp = JSON.parse(await request(options));
+      expect(resp.name).toBe('Cindi');
+    });
+  });
+
+  describe('Menghapus data pekerja', () => {
+    it('bisa menghapus data pekerja dengan ID', async () => {
+      const form = new FormData();
+      form.append('name', 'Cindi');
+      form.append('age', 21);
+      form.append('bio', 'Hidup seperti Larry');
+      form.append('address', 'Bikini Bottom');
+      form.append('photo', fs.createReadStream('assets/test.jpg'));
+
+      const response = await new Promise((resolve, reject) => {
+        form.submit('http://localhost:7001/register', function (err, res) {
+          if (err) {
+            reject(err);
+          }
+          let data = '';
+          res.on('data', (chunk) => {
+            data += chunk.toString();
+          });
+          res.on('end', () => {
+            resolve(data);
+          });
+        });
+      });
+      const data = JSON.parse(response);
+      expect(data.name).toBe('Cindi');
+
+      const options = {
+        hostname: 'localhost',
+        port: 7001,
+        path: `/remove?id=${data.id}`,
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+
+      const resp = JSON.parse(await request(options));
+      expect(resp.name).toBe('Cindi');
     });
   });
 });
