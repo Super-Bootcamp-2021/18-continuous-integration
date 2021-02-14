@@ -1,11 +1,14 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: pull-request-tugas
+name: feature-branch-tugas
 
 on:
-  pull_request:
-    branches: [ develop-testing ]
+  push:
+    branches:
+            - angga 
+            - hadi
+            - Silvi
 
 jobs:
   build:
@@ -66,9 +69,5 @@ jobs:
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
-    - name: Run Install Dependencies
-      run: npm i
-    - name: Run Test Linter
-      run: npm run lint
-    - name: Run Integration Test
-      run: npm test
+    - run: npm i
+    - run: npm run test:worker
