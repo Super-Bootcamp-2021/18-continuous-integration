@@ -55,8 +55,8 @@ describe('worker', () => {
         host: 'localhost',
         port: 5432,
         username: 'postgres',
-        password: 'passpostgres1997',
-        database: 'sanbercode2',
+        password: 'postgres',
+        database: 'sanbercode',
       });
     } catch (err) {
       console.error('database connection failed');
@@ -64,10 +64,10 @@ describe('worker', () => {
     try {
       await storage.connect('task-manager', {
         endPoint: '127.0.0.1',
-        port: 1111,
+        port: 9000,
         useSSL: false,
-        accessKey: 'minio',
-        secretKey: '12345678',
+        accessKey: 'minioadmin',
+        secretKey: 'minioadmin',
       });
     } catch (err) {
       console.error('object storage connection failed');
