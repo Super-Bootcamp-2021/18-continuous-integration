@@ -81,6 +81,7 @@ jobs:
       postgres:
         image: postgres:11
         env:
+          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
         options: >-
@@ -92,17 +93,25 @@ jobs:
           - 5432:5432
 
     runs-on: ubuntu-latest
-    env:
-      tm_database__password: ${{ secrets.POSTGRES_PASSWORD }}
-      tm_database__database: ${{ secrets.POSTGRES_DB }}
     steps:
-      # Downloads a copy of the code in your repository before running CI tests
-      - name: Check out repository code
-        uses: actions/checkout@v2
-
-      # Performs a clean installation of all dependencies in the `package.json` file
-      # For more information, see https://docs.npmjs.com/cli/ci.html
-      - name: Install dependencies
+      - uses: actions/checkout@v2
+      - name: Use Node.js 14
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Run Install Dependencies
         run: npm i
 
       - name: Connect to PostgreSQL
@@ -112,10 +121,10 @@ jobs:
         # Environment variable used by the `client.js` script to create a new PostgreSQL client.
         env:
           # The hostname used to communicate with the PostgreSQL service container
-          POSTGRES_HOST: postgres
-          # The default PostgreSQL port
-          POSTGRES_PORT: 5432
-          
+          POSTGRES_HOST : postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+
       # tm_server__workerPort: ${{ secrets.WORKER_PORT }}
       # tm_server__taskPort: ${{ secrets.TASK_PORT }}
       # tm_server__performancePort: ${{ secrets.PERFORMANCE_PORT }}
