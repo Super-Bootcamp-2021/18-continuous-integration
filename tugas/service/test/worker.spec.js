@@ -221,10 +221,10 @@ describe('worker', () => {
       expect(result).toStrictEqual(JSON.parse(getdata)[0]);
     });
 
-    it('error register worker (data tidak lengkap)', async () => {
+    it('error register worker (data registrasi pekerja tidak lengkap)', async () => {
       const form = new FormData();
       form.append('name', 'Moh. Ilham Burhanuddin');
-      form.append('age', 23);      
+      form.append('age', 23);
       form.append(
         'photo',
         fs.createReadStream(path.resolve(__dirname, 'gambar1.jpeg'))
@@ -245,15 +245,12 @@ describe('worker', () => {
             });
           });
         });
-      } catch(err) {        
-        expect(err).toBe('data registrasi pekerja tidak lengkap');      
+      } catch (err) {
+        expect(err).toBe('data registrasi pekerja tidak lengkap');
       }
-
-      // const data = JSON.parse(response);
-      // expect(data.name).toBe('data registrasi pekerja tidak lengkap');
     });
 
-    it('error info worker (pekerja tidak ditemukan)', async () => {      
+    it('error info worker (pekerja tidak ditemukan)', async () => {
       try {
         const param = querystring.stringify({
           id: '0',
@@ -267,12 +264,12 @@ describe('worker', () => {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
         });
-      } catch(err) {
+      } catch (err) {
         expect(err).toBe('pekerja tidak ditemukan');
-      }      
+      }
     });
-    
-    it('error photo worker (photo pekerja tidak ditemukan)', async () => {
+
+    it('error photo worker (pekerja tidak ditemukan)', async () => {
       try {
         await request({
           hostname: 'localhost',
@@ -283,16 +280,16 @@ describe('worker', () => {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
         });
-      } catch(err) {
+      } catch (err) {
         expect(err).toBe('pekerja tidak ditemukan');
-      }      
+      }
     });
 
-    it('error remove worker (pekerja tidak ditemukan)', async () => {      
+    it('error remove worker (pekerja tidak ditemukan)', async () => {
       try {
         const param = querystring.stringify({
           id: '0',
-        });        
+        });
 
         await request({
           hostname: 'localhost',
@@ -303,9 +300,9 @@ describe('worker', () => {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
         });
-      } catch(err) {
+      } catch (err) {
         expect(err).toBe('pekerja tidak ditemukan');
-      }      
-    });    
+      }
+    });
   });
 });
