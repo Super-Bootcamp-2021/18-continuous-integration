@@ -12,14 +12,32 @@ jobs:
     # Service containers to run with `container-job`
     services:
       # Label used to access the service container
+      nats:
+        image: nats
+        ports:
+          - 4222:4222
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+      minio:
+        image: bitnami/minio:latest
+        env:
+          MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
+          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+        ports:
+          - 9000:9000
+        options: --name minio-server
       postgres:
-        # Docker Hub image
         image: postgres:11
-        # Provide the password for postgres
         env:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-        # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -27,24 +45,17 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-      minio:
-        image: bitnami/minio:latest
-        env:
-          MINIO_ACCESS_KEY: ${{ secrets.MINIO_USER }}
-          MINIO_SECRET_KEY: ${{ secrets.MINIO_PASSWORD }}
-        ports:
-          - 9000:9000
-        options: --name minio-server
 
     runs-on: ubuntu-latest
     env:
       ## add secret on settings-secret-add new secret e.g name=POSTGRES_PASSWORD value=mypassword
-      server_database__password: ${{ secrets.POSTGRES_PASSWORD }}
-      server_database__database: ${{ secrets.POSTGRES_DB }}
-      server_minio__accesskey: ${{ secrets.MINIO_USER }}
-      server_minio__secretkey: ${{ secrets.MINIO_PASSWORD }}
-      server_server__port___task: 7002
-      server_server__port___worker: 7001
+      server_database__password: ${{ secrets.POSTGRES_PASSWORD}}
+      server_database__database: ${{ secrets.POSTGRES_DB}}
+      server_minio__accessKey: ${{ secrets.MINIO_ACCESS_KEY}}
+      server_minio__secretKey: ${{ secrets.MINIO_SECRET_KEY}}
+      server_server__port__task: 7002
+      server_server__port__worker: 7001
+      server_server__port__performance: 7003
     defaults:
       run:
         working-directory: ./tugas
@@ -71,4 +82,4 @@ jobs:
     - name: Run Test Linter
       run: npm run lint
     - name: Run Integration Test
-      run: npm run test
+      run: npm run est:worker
