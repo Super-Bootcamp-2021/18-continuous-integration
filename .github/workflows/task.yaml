@@ -33,8 +33,11 @@ jobs:
       minio:
         image: bitnami/minio:latest
         env:
-          MINIO_ROOT_USER: ${{ secrets.MINIO_ACCESS_KEY }}
-          MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_SECRET_KEY }}
+          MINIO_ROOT_USER: minioadmin
+          MINIO_ROOT_PASSWORD: minioadmin
+        # env:
+        #   MINIO_ROOT_USER: ${{ secrets.MINIO_ACCESS_KEY }}
+        #   MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_SECRET_KEY }}
         ports:
           - 9000:9000
       nats:
