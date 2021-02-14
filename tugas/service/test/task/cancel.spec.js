@@ -140,6 +140,7 @@ describe('Task Add', () => {
     try {
       connection = await connect([TaskSchema,WorkerSchema], config.pg);
     } catch (err) {
+      console.log(config.pg);
       console.error('database connection failed',err);
     }
 
