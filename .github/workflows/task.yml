@@ -26,16 +26,21 @@ jobs:
       minio:
         image: bitnami/minio:latest
         env:
-          MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
-          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+          # MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
+          # MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+          MINIO_ACCESS_KEY: admin
+          MINIO_SECRET_KEY: password
         ports:
           - 9000:9000
         options: --name minio-server
       postgres:
         image: postgres:11
         env:
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          # POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          # POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+          POSTGRES_HOST: postgres
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -46,13 +51,20 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      tm_database__password: ${{ secrets.POSTGRES_PASSWORD }}
-      tm_database__database: ${{ secrets.POSTGRES_DB }}
-      tm_server__workerPort: ${{ secrets.WORKER_PORT }}
-      tm_server__taskPort: ${{ secrets.TASK_PORT }}
-      tm_server__performancePort: ${{ secrets.PERFORMANCE_PORT }}
-      tm_minio__accessKey: ${{ secrets.MINIO_ACCESS_KEY }}
-      tm_minio__secretKey: ${{ secrets.MINIO_SECRET_KEY }}
+      # tm_database__password: ${{ secrets.POSTGRES_PASSWORD }}
+      # tm_database__database: ${{ secrets.POSTGRES_DB }}
+      # tm_server__workerPort: ${{ secrets.WORKER_PORT }}
+      # tm_server__taskPort: ${{ secrets.TASK_PORT }}
+      # tm_server__performancePort: ${{ secrets.PERFORMANCE_PORT }}
+      # tm_minio__accessKey: ${{ secrets.MINIO_ACCESS_KEY }}
+      # tm_minio__secretKey: ${{ secrets.MINIO_SECRET_KEY }}
+      tm_database__password: postgres
+      tm_database__database: postgres
+      tm_server__workerPort: 7001
+      tm_server__taskPort: 7002
+      tm_server__performancePort: 7003
+      tm_minio__accessKey: admin
+      tm_minio__secretKey: password
     defaults:
       run:
         working-directory: ./tugas
@@ -75,7 +87,7 @@ jobs:
           ${{ runner.os }}-build-
           ${{ runner.os }}-
     - name: Run Install Dependencies
-      run: npm i
+      run: npm ci
     - name: Run Test Linter
       run: npm run lint
     - name: Run Integration Test
