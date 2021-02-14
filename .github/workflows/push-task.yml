@@ -36,7 +36,7 @@ jobs:
       server_server__port___task: 7002
     defaults:
       run:
-        working-directory: ./tugas
+        working-directory: ./tugas/task
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js 12
@@ -60,4 +60,4 @@ jobs:
     - name: Run Test Linter
       run: npm run lint
     - name: Run Integration Test
-      run: npm test
+      run: npm run test:tasks
