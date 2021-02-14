@@ -44,7 +44,6 @@ function run(callback) {
           break;
         case '/info':
           if (req.method === 'GET') {
-            console.log('IIINFFFOOOOO');
             return infoSvc(req, res);
           } else {
             respond(404);

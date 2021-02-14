@@ -148,47 +148,129 @@ describe('Worker Service', () => {
       const data = JSON.parse(response);
       expect(data).toHaveLength(2);
     });
+  });
 
-    describe('Menambah data pekerja', () => {
-      it('bisa menambah data pekerja', async () => {
-        const form = new FormData();
-        form.append('name', 'Cindi');
-        form.append('age', 21);
-        form.append('bio', 'Hidup seperti Larry');
-        form.append('address', 'Bikini Bottom');
-        form.append('photo', fs.createReadStream('assets/test.jpg'));
+  describe('Menambah data pekerja', () => {
+    it('bisa menambah data pekerja', async () => {
+      const form = new FormData();
+      form.append('name', 'Cindi');
+      form.append('age', 21);
+      form.append('bio', 'Hidup seperti Larry');
+      form.append('address', 'Bikini Bottom');
+      form.append('photo', fs.createReadStream('assets/test.jpg'));
 
-        const response = await new Promise((resolve, reject) => {
-          form.submit('http://localhost:7001/register', function (err, res) {
-            if (err) {
-              reject(err);
-            }
-            let data = '';
-            res.on('data', (chunk) => {
-              data += chunk.toString();
-            });
-            res.on('end', () => {
-              resolve(data);
-            });
+      const response = await new Promise((resolve, reject) => {
+        form.submit('http://localhost:7001/register', function (err, res) {
+          if (err) {
+            reject(err);
+          }
+          let data = '';
+          res.on('data', (chunk) => {
+            data += chunk.toString();
+          });
+          res.on('end', () => {
+            resolve(data);
           });
         });
-        const data = JSON.parse(response);
-        expect(data.name).toBe('Cindi');
-
-        const options = {
-          hostname: 'localhost',
-          port: 7001,
-          path: '/list',
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        };
-
-        const getAllData = await request(options);
-        const allData = JSON.parse(getAllData);
-        expect(allData).toHaveLength(3);
       });
+      const data = JSON.parse(response);
+      expect(data.name).toBe('Cindi');
+
+      const options = {
+        hostname: 'localhost',
+        port: 7001,
+        path: '/list',
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+
+      const getAllData = await request(options);
+      const allData = JSON.parse(getAllData);
+      expect(allData).toHaveLength(3);
+    });
+  });
+
+  describe('Mencari info data pekerja', () => {
+    it('bisa mencari info pekerja dengan ID', async () => {
+      const form = new FormData();
+      form.append('name', 'Cindi');
+      form.append('age', 21);
+      form.append('bio', 'Hidup seperti Larry');
+      form.append('address', 'Bikini Bottom');
+      form.append('photo', fs.createReadStream('assets/test.jpg'));
+
+      const response = await new Promise((resolve, reject) => {
+        form.submit('http://localhost:7001/register', function (err, res) {
+          if (err) {
+            reject(err);
+          }
+          let data = '';
+          res.on('data', (chunk) => {
+            data += chunk.toString();
+          });
+          res.on('end', () => {
+            resolve(data);
+          });
+        });
+      });
+      const data = JSON.parse(response);
+      expect(data.name).toBe('Cindi');
+
+      const options = {
+        hostname: 'localhost',
+        port: 7001,
+        path: `/info?id=${data.id}`,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+
+      const resp = JSON.parse(await request(options));
+      expect(resp.name).toBe('Cindi');
+    });
+  });
+
+  describe('Menghapus data pekerja', () => {
+    it('bisa menghapus data pekerja dengan ID', async () => {
+      const form = new FormData();
+      form.append('name', 'Cindi');
+      form.append('age', 21);
+      form.append('bio', 'Hidup seperti Larry');
+      form.append('address', 'Bikini Bottom');
+      form.append('photo', fs.createReadStream('assets/test.jpg'));
+
+      const response = await new Promise((resolve, reject) => {
+        form.submit('http://localhost:7001/register', function (err, res) {
+          if (err) {
+            reject(err);
+          }
+          let data = '';
+          res.on('data', (chunk) => {
+            data += chunk.toString();
+          });
+          res.on('end', () => {
+            resolve(data);
+          });
+        });
+      });
+      const data = JSON.parse(response);
+      expect(data.name).toBe('Cindi');
+
+      const options = {
+        hostname: 'localhost',
+        port: 7001,
+        path: `/remove?id=${data.id}`,
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+
+      const resp = JSON.parse(await request(options));
+      expect(resp.name).toBe('Cindi');
     });
   });
 });
