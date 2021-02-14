@@ -53,7 +53,7 @@ describe('pekerjaan', () => {
       var form = new FormData();
       form.append('job', 'belajar continuous-integration');
       form.append('assignee_id', 1);
-      form.append('attachment', fs.createReadStream('./img/dino.png'));
+      form.append('attachment', fs.createReadStream('img/dino.png'));
 
       function createTask() {
         return new Promise((resolve, reject) => {
