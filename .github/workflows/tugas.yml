@@ -57,6 +57,11 @@ jobs:
           MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET }}
         ports:
           - 9000:9000
+        options: >-
+          --health-cmd "curl http://localhost:9000/minio/health/live"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     runs-on: ubuntu-latest
     env:
       tm_serverWorker__port: 7001
@@ -126,6 +131,11 @@ jobs:
           MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET }}
         ports:
           - 9000:9000
+        options: >-
+          --health-cmd "curl http://localhost:9000/minio/health/live"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     runs-on: ubuntu-latest
     env:
       tm_serverTask__port: 7002
