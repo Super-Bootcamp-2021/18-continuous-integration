@@ -11,7 +11,7 @@ const workerSvc = require('./worker.client');
 
 /**
  * to add new worker
- * @param {any} data 
+ * @param {any} data
  */
 exports.register = (data) => async (dispatch) => {
   dispatch(loadingAction());
@@ -25,7 +25,7 @@ exports.register = (data) => async (dispatch) => {
 
 /**
  * to remove worker
- * @param {number} id 
+ * @param {number} id
  */
 exports.remove = (id) => async (dispatch) => {
   dispatch(loadingAction());

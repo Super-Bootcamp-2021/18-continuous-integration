@@ -14,7 +14,7 @@ const taskSvc = require('./task.client');
 
 /**
  * to add tasks
- * @param {any} data 
+ * @param {any} data
  */
 exports.add = (data) => async (dispatch) => {
   dispatch(loadingAction());
@@ -28,7 +28,7 @@ exports.add = (data) => async (dispatch) => {
 
 /**
  * to make a check that the task is done
- * @param {number} id 
+ * @param {number} id
  */
 exports.done = (id) => async (dispatch) => {
   dispatch(loadingAction());
@@ -42,7 +42,7 @@ exports.done = (id) => async (dispatch) => {
 
 /**
  * to cancel the task
- * @param {number} id 
+ * @param {number} id
  */
 exports.cancel = (id) => async (dispatch) => {
   dispatch(loadingAction());
@@ -56,7 +56,7 @@ exports.cancel = (id) => async (dispatch) => {
 
 /**
  * @module getList
- * to get all task list 
+ * to get all task list
  */
 exports.getList = async (dispatch) => {
   dispatch(loadingAction());

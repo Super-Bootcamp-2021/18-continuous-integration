@@ -1,9 +1,6 @@
 /** @module reducer - state management (redux) */
 
-const { SERVICE_BASEURL } = require('./config');
-
 const { WORKER_SERVICE_BASEURL } = require('../config');
-
 
 // setup state
 const initialState = {
@@ -12,7 +9,7 @@ const initialState = {
   workers: [],
 };
 
-/** 
+/**
  * to change state.loading and state.error
  * @param {any} state
  */
@@ -21,7 +18,7 @@ function loading(state) {
   state.error = null;
 }
 
-/** 
+/**
  * to change state.erro and state.loading from action.payload
  * @param {any} state
  * @param {any} action
@@ -31,7 +28,7 @@ function error(state, action) {
   state.error = action.payload;
 }
 
-/** 
+/**
  * to change state.error to null / no error
  * @param {any} state
  */
@@ -39,7 +36,7 @@ function clearError(state) {
   state.error = null;
 }
 
-/** 
+/**
  * to add data to worker list
  * @param {any} state
  * @param {any} action
@@ -58,7 +55,7 @@ function registered(state, action) {
   return state;
 }
 
-/** 
+/**
  * to remove data from worker list
  * @param {any} state
  * @param {any} action
@@ -72,8 +69,8 @@ function removed(state, action) {
   return state;
 }
 
-/** 
- * to load all worker 
+/**
+ * to load all worker
  * @param {any} state
  * @param {any} action
  * @returns {any} state
