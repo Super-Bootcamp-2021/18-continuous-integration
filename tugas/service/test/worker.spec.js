@@ -10,7 +10,6 @@ const { truncate } = require('../worker/worker');
 const fs = require('fs');
 const http = require('http');
 const path = require('path');
-const { config } = require('../config')
 
 function request(options, form = null) {
   return new Promise((resolve, reject) => {
@@ -53,7 +52,7 @@ describe('worker', () => {
         port: 5432,
         username: 'postgres',
         password: 'postgres',
-        database: 'sanbercode',
+        database: 'database',
       });
     } catch (err) {
       console.error('database connection failed');
