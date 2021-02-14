@@ -53,8 +53,8 @@ jobs:
       minio:
         image: minio/minio:latest
         env:
-          MINIO_ROOT_USER: ${{ secrets.MINIO_ACCESS }}
-          MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_SECRET }}
+          MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS }}
+          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET }}
         ports:
           - 9000:9000
     runs-on: ubuntu-latest
@@ -122,8 +122,8 @@ jobs:
       minio:
         image: minio/minio:latest
         env:
-          MINIO_ROOT_USER: ${{ secrets.MINIO_ACCESS }}
-          MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_SECRET }}
+          MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS }}
+          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET }}
         ports:
           - 9000:9000
     runs-on: ubuntu-latest

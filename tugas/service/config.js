@@ -10,7 +10,7 @@ const defaultConfig = {
     database: 'database',
   },
   storage: {
-    endPoint: '127.0.0.1',
+    endPoint: 'localhost',
     port: 9000,
     useSSL: false,
     accessKey: 'local-minio',
