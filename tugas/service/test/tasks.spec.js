@@ -7,7 +7,12 @@ const taskServer = require('../tasks/server');
 const workerServer = require('../worker/server');
 const { TaskSchema } = require('../tasks/task.model');
 const { WorkerSchema } = require('../worker/worker.model');
-const { truncate, ERROR_TASK_DATA_INVALID, ERROR_TASK_ALREADY_DONE, ERROR_TASK_NOT_FOUND } = require('../tasks/task');
+const {
+  truncate,
+  ERROR_TASK_DATA_INVALID,
+  ERROR_TASK_ALREADY_DONE,
+  ERROR_TASK_NOT_FOUND,
+} = require('../tasks/task');
 // const nock = require('nock');
 const { request, requestOther, addTask } = require('./request');
 const FormData = require('form-data');

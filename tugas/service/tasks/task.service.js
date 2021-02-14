@@ -123,7 +123,7 @@ async function doneSvc(req, res) {
       res.write(err);
       res.end();
       return;
-    }else if (err === ERROR_TASK_ALREADY_DONE) {
+    } else if (err === ERROR_TASK_ALREADY_DONE) {
       res.statusCode = 400;
       res.write(err);
       res.end();
