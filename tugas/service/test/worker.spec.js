@@ -9,6 +9,7 @@ const FormData = require('form-data');
 const fs = require('fs');
 const { truncate } = require('../worker/worker');
 const http = require('http');
+const { config } = require('../config');
 
 function request(options, form = null) {
   return new Promise((resolve, reject) => {
@@ -45,26 +46,17 @@ describe('worker', () => {
   let connection;
   beforeAll(async () => {
     try {
-      connection = await orm.connect([WorkerSchema, TaskSchema], {
-        type: 'postgres',
-        host: 'localhost',
-        port: 5432,
-        username: 'postgres',
-        password: 'postgres',
-        database: 'sanbercode',
-      });
+      connection = await orm.connect(
+        [WorkerSchema, TaskSchema],
+        config.database
+      );
     } catch (err) {
       console.error('database connection failed');
     }
     try {
-      await storage.connect('task-manager', {
-        endPoint: '127.0.0.1',
-        port: 9000,
-        useSSL: false,
-        accessKey: 'minioadmin',
-        secretKey: 'minioadmin',
-      });
+      await storage.connect('task-manager', config.storage);
     } catch (err) {
+      console.error(err);
       console.error('object storage connection failed');
     }
     try {
@@ -88,7 +80,7 @@ describe('worker', () => {
     it('get worker', async () => {
       const options = {
         hostname: 'localhost',
-        port: 7001,
+        port: config.serverWorker.port,
         path: '/list',
         method: 'GET',
         headers: {
@@ -110,18 +102,21 @@ describe('worker', () => {
       form.append('photo', fs.createReadStream('assets/nats.png'));
 
       const response = await new Promise((resolve, reject) => {
-        form.submit('http://localhost:7001/register', function (err, res) {
-          if (err) {
-            reject(err);
+        form.submit(
+          `http://localhost:${config.serverWorker.port}/register`,
+          function (err, res) {
+            if (err) {
+              reject(err);
+            }
+            let data = '';
+            res.on('data', (chunk) => {
+              data += chunk.toString();
+            });
+            res.on('end', () => {
+              resolve(data);
+            });
           }
-          let data = '';
-          res.on('data', (chunk) => {
-            data += chunk.toString();
-          });
-          res.on('end', () => {
-            resolve(data);
-          });
-        });
+        );
       });
 
       const data = JSON.parse(response);

@@ -4,8 +4,9 @@
   "description": "sample service mesh implementation",
   "main": "index.js",
   "scripts": {
-    "test:worker": "jest -- worker",
-    "test:tasks": "jest -- tasks",
+    "test": "jest",
+    "worker:test": "jest service/test/worker.spec.js",
+    "task:test": "jest service/test/tasks.spec.js",
     "svc:start": "node .",
     "svc:dev": "nodemon .",
     "lint": "eslint .",
