@@ -27,13 +27,23 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
+      minio:
+        image: minio
+        env:
+          MINIO_ROOT_USER: ${{ secrets.MINIO_USER }}
+          MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_PASSWORD }}
+        ports:
+          - 9000:9000
 
     runs-on: ubuntu-latest
     env:
       ## add secret on settings-secret-add new secret e.g name=POSTGRES_PASSWORD value=mypassword
       server_database__password: ${{ secrets.POSTGRES_PASSWORD }}
       server_database__database: ${{ secrets.POSTGRES_DB }}
+      server_minio__accesskey: ${{ secrets.MINIO_USER }}
+      server_minio__secretkey: ${{ secrets.MINIO_PASSWORD }}
       server_server__port___task: 7002
+      server_server__port___worker: 7001
     defaults:
       run:
         working-directory: ./tugas
