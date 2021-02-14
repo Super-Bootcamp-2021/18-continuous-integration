@@ -44,7 +44,7 @@ async function add(data) {
 async function done(id) {
   const taskRepo = getConnection().getRepository('Task');
   const task = await taskRepo.findOne(id, { relations: ['assignee'] });
-  if (!task || task?.cancelled) {
+  if (!task || task.cancelled) {
     throw ERROR_TASK_NOT_FOUND;
   }
   if (task.done) {
