@@ -57,11 +57,23 @@ function list() {
   return taskRepo.find({ relations: ['assignee'] });
 }
 
+async function truncate() {
+  const repository = getConnection().getRepository('Task');
+
+  try {
+    await repository.clear();
+  } catch (error) {
+    return false;
+  }
+  return true;
+}
+
 module.exports = {
   add,
   done,
   cancel,
   list,
+  truncate,
   ERROR_TASK_DATA_INVALID,
   ERROR_TASK_NOT_FOUND,
 };
