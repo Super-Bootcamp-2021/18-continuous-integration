@@ -44,7 +44,7 @@ function req(options, form = null) {
   });
 }
 
-describe('Worker Service ', () => {
+describe('Worker Service', () => {
   let connDB;
   let connStorage;
   let connBus;
