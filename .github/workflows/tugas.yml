@@ -4,12 +4,50 @@
 name: tugas
 
 on:
+  push:
+    branches:
+      - 'issue-*'
   pull_request:
     branches: [ develop ]
 
 jobs:
   build:
+    services:
+    # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres:11
+        env:
+          tm_pg_database__username: ${{ secrets.POSTGRES_USERNAME }}
+          tm_pg_database__password: ${{ secrets.POSTGRES_PASSWORD }}
+          tm_pg_database__database: ${{ secrets.POSTGRES_DB }}
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      minio:
+        image: store/minio/minio:RELEASE.2020-12-29T23-29-29Z
+        env:
+          tm_minio_database__accessKey: ${{ secrets.MINIO_ACCESS_KEY }}
+          tm_minio_database__secretKey: ${{ secrets.MINIO_SECRET_KEY }}
+        ports:
+          - 9000:9000
+      nats:
+        image: nats
+        env:
+          tm_redist__port: ${{ secrets.MINIO_ACCESS_KEY }}
+        ports:
+          - ${{ secrets.NATS_PORT }}:${{ secrets.NATS_PORT }}
+  
     runs-on: ubuntu-latest
+    env:
+      ## add secret on settings-secret-add new secret e.g name=POSTGRES_PASSWORD value=mypassword
+      tm_server__taskPort: 7002
+      tm_server__workerPort: 7001
     defaults:
       run:
         working-directory: ./tugas
@@ -33,7 +71,7 @@ jobs:
           ${{ runner.os }}-
     - name: Run Install Dependencies
       run: npm i
-    - name: Run Test Linter
-      run: npm run lint
+    # - name: Run Test Linter
+    #   run: npm run lint
     - name: Run Integration Test
       run: npm test
