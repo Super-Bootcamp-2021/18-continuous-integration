@@ -6,8 +6,8 @@ const defaultConfig = {
     host: 'localhost',
     port: 5432,
     username: 'postgres',
-    password: '',
-    database: 'database',
+    password: 'postgres',
+    database: 'sanbercode',
   },
   server: {
     workerPort: 7001,
@@ -18,8 +18,8 @@ const defaultConfig = {
     endPoint: '127.0.0.1',
     port: 9000,
     useSSL: false,
-    accessKey: 'local-minio',
-    secretKey: 'local-test-secret',
+    accessKey: 'minioadmin',
+    secretKey: 'minioadmin',
   },
 };
 
