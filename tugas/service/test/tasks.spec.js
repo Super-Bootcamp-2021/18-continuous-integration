@@ -77,7 +77,7 @@ describe('task', () => {
       expect(data).toHaveLength(1);
     });
 
-    describe.only('Update Status', () => {
+    describe('Update Status', () => {
       it('update status to be done', async () => {
         response = await request(
           `http://localhost:${config.server.taskPort}/list`
@@ -117,7 +117,7 @@ describe('task', () => {
         expect(data.cancelled).toBeTruthy();
       });
     });
-    describe('Attachment', () => {
+    describe.only('Attachment', () => {
       it('show attachment', async () => {
         const test = 'show attachment';
         expect(test).toBe('show attachment');
