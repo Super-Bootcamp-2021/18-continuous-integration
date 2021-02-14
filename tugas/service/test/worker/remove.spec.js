@@ -15,7 +15,7 @@ const worker = require('../../worker/worker');
 
 async function workerServerSetup() {
   try {
-    await storage.connect('photo', config.minio_database);
+    await storage.connect('photo', config.minio);
   } catch (err) {
     console.error('object storage connection failed',err);
   }
@@ -89,7 +89,7 @@ describe('Task Add', () => {
   beforeAll(async () => {
      //orm
     try {
-      connection = await connect([WorkerSchema], config.pg_database);
+      connection = await connect([WorkerSchema], config.pg);
     } catch (err) {
       console.error('database connection failed');
     }

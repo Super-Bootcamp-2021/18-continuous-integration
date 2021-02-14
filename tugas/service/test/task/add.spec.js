@@ -19,7 +19,7 @@ const { truncate } = require('../../tasks/task');
 
 async function workerServerSetup() {
   try {
-    await storage.connect('photo', config.minio_database);
+    await storage.connect('photo', config.minio);
   } catch (err) {
     console.error('object storage connection failed',err);
   }
@@ -28,7 +28,7 @@ async function workerServerSetup() {
 
 async function taskServerSetup() {
   try {
-    await storage.connect('attachment', config.minio_database);
+    await storage.connect('attachment', config.minio);
   } catch (err) {
     console.error('object storage connection failed',err);
   }
@@ -75,7 +75,7 @@ describe('Task Add', () => {
   beforeAll(async () => {
      //orm
     try {
-      connection = await connect([TaskSchema,WorkerSchema], config.pg_database);
+      connection = await connect([TaskSchema,WorkerSchema], config.pg);
     } catch (err) {
       console.error('database connection failed');
     }
