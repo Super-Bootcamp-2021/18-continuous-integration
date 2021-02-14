@@ -34,9 +34,7 @@ jobs:
         env:
           MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
           MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
-        volumes:
-          - ${{ github.workspace }}:/data
-        options: --name=minio --health-cmd
+        options: --entrypoint ${{ github.workspace }}/.github/workflows/minio.sh
         ports:
           - 9000:9000
       nats:
