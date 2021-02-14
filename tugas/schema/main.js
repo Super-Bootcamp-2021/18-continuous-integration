@@ -8,7 +8,6 @@ workerPerformance.host = 'localhost:7001';
 taskPerformance.host = 'localhost:7002';
 specPerformance.host = 'localhost:7003';
 
-
 SwaggerUI({
   spec: workerPerformance,
   dom_id: '#swagger1',
@@ -23,5 +22,3 @@ SwaggerUI({
   spec: specPerformance,
   dom_id: '#swagger3',
 });
-
-
