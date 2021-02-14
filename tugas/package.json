@@ -17,6 +17,7 @@
     "eslint": "^7.19.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-prettier": "^3.3.1",
+    "form-data": "^3.0.0",
     "jest": "^26.6.3",
     "prettier": "^2.2.1",
     "css-loader": "^5.0.1",
@@ -28,9 +29,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.5.0",
     "busboy": "^0.3.1",
-    "http": "0.0.1-security",
     "mariadb": "^2.5.2",
     "mime-types": "^2.1.28",
     "minio": "^7.0.18",
@@ -40,9 +39,9 @@
     "pg": "^8.5.1",
     "pg-hstore": "^2.3.3",
     "redis": "^3.0.2",
-    "redux-thunk": "^2.3.0",
-    "rxjs": "^6.6.3",
     "typeorm": "^0.2.30",
-    "url": "^0.11.0"
+    "@reduxjs/toolkit": "^1.5.0",
+    "rxjs": "^6.6.3",
+    "redux-thunk": "^2.3.0"
   }
 }
