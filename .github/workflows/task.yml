@@ -21,8 +21,8 @@ jobs:
       minio:
         image: bitnami/minio:latest
         env:
-          MINIO_ACCESS_KEY: minio
-          MINIO_SECRET_KEY: minio123
+          MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
+          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
         ports:
           - 9000:9000
         options: --name minio-server
@@ -44,8 +44,8 @@ jobs:
       tm_database__password: ${{ secrets.POSTGRES_PASSWORD }}
       tm_database__database: ${{ secrets.POSTGRES_DB }}
       tm_server__workerPort: ${{ secrets.WORKER_PORT }}
-      tm_server__taskPort: ${{ secrets.WORKER_PORT }}
-      tm_server__performancePort: ${{ secrets.WORKER_PORT }}
+      tm_server__taskPort: ${{ secrets.TASK_PORT }}
+      tm_server__performancePort: ${{ secrets.PERFORMANCE_PORT }}
     defaults:
       run:
         working-directory: ./tugas
