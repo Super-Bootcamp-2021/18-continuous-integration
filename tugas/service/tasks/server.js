@@ -63,7 +63,7 @@ function run(callback) {
           respond(404);
       }
     } catch (err) {
-      respond(500, 'unkown server error');
+      respond(500, 'unkown sss error');
     }
   });
 
@@ -75,7 +75,7 @@ function run(callback) {
   });
 
   // run server
-  const PORT = config.server?.port.task;
+  const PORT = config.server.port.task;
   server.listen(PORT, () => {
     stdout.write(`🚀 task service listening on port ${PORT}\n`);
   });
