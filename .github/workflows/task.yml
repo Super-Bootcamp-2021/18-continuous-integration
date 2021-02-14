@@ -5,7 +5,7 @@ name: task
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ task ]
 
 jobs:
   build:
@@ -58,10 +58,10 @@ jobs:
         working-directory: ./tugas
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js 14
+    - name: Use Node.js 12
       uses: actions/setup-node@v1
       with:
-        node-version: 14
+        node-version: 12
     - name: Cache node modules
       uses: actions/cache@v2
       env:

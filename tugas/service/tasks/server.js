@@ -76,7 +76,7 @@ function run(callback) {
   });
 
   // run server
-  const PORT = config.server?.taskPort;
+  const PORT = config.server.taskPort;
   server.listen(PORT, () => {
     stdout.write(`🚀 task service listening on port ${PORT}\n`);
   });

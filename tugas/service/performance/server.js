@@ -51,7 +51,7 @@ function run(callback) {
   });
 
   // run server
-  const PORT = config.server?.performancePort;
+  const PORT = config.server.performancePort;
   server.listen(PORT, () => {
     stdout.write(`🚀 performance service listening on port ${PORT}\n`);
   });
