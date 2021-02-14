@@ -6,7 +6,7 @@ name: tugas
 on:
   push:
     branches:
-      - 'issue-7'
+      - 'issue-*'
   pull_request:
     branches: [ develop ]
 
@@ -76,7 +76,7 @@ jobs:
           ${{ runner.os }}-
     - name: Run Install Dependencies
       run: npm i
-    # - name: Run Test Linter
-    #   run: npm run lint
+    - name: Run Test Linter
+      run: npm run lint
     - name: Run Integration Test
       run: npm test
