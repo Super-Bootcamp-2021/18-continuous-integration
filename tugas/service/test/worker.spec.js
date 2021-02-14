@@ -10,6 +10,7 @@ const { truncate } = require('../worker/worker');
 const fs = require('fs');
 const http = require('http');
 const path = require('path');
+const { config } = require('../config')
 
 function request(options, form = null) {
   return new Promise((resolve, reject) => {
@@ -51,7 +52,7 @@ describe('worker', () => {
         host: 'localhost',
         port: 5432,
         username: 'postgres',
-        password: 'stratosfer10110100',
+        password: 'postgres',
         database: 'sanbercode',
       });
     } catch (err) {
