@@ -28,7 +28,7 @@ describe('pekerjaan', () => {
   });
 
   describe('daftar pekerjaan', () => {
-    it('menambah pekerjaan baru', async () => {
+    it.only('menambah pekerjaan baru', async () => {
       truncate();
       nock('http://localhost:7001').get('/info?id=1').reply(200, {
         id: 1,
