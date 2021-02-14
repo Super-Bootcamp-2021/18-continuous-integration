@@ -76,7 +76,7 @@ function run(callback) {
   });
 
   // run server
-  const PORT = config.serverWorker;
+  const PORT = config.serverWorker.port;
   server.listen(PORT, () => {
     stdout.write(`🚀 worker service listening on port ${PORT}\n`);
   });

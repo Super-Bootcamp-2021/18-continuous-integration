@@ -80,7 +80,7 @@ describe('worker', () => {
     it('get worker', async () => {
       const options = {
         hostname: 'localhost',
-        port: config.serverWorker,
+        port: config.serverWorker.port,
         path: '/list',
         method: 'GET',
         headers: {
@@ -103,7 +103,7 @@ describe('worker', () => {
 
       const response = await new Promise((resolve, reject) => {
         form.submit(
-          `http://localhost:${config.serverWorker}/register`,
+          `http://localhost:${config.serverWorker.port}/register`,
           function (err, res) {
             if (err) {
               reject(err);
