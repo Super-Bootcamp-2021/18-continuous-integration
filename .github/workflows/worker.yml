@@ -40,21 +40,21 @@ jobs:
           - 6222:6222
           - 8222:8222        
       minio:
-        image: 'bitnami/minio:latest'
-        ports:
-          - '9000:9000'            
-               
+        image: bitnami/minio:latest
         env:
-          MINIO_ACCESS_KEY: 'minio'
-          MINIO_SECRET_KEY: '12345678'
+          MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
+          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+        ports:
+          - 9000:9000
+        options: --name minio-server
   
     runs-on: ubuntu-latest
     env:
       name: worker-env 
       cache-name: cache-node-modules
       ## add secret on settings-secret-add new secret e.g name=POSTGRES_PASSWORD value=mypassword
-      sanbercode2_database__password: ${{ secrets.POSTGRES_PASSWORD }}
-      sanbercode2_database__database: ${{ secrets.POSTGRES_DB }}
+      sanbercode_database__password: ${{ secrets.POSTGRES_PASSWORD }}
+      sanbercode_database__database: ${{ secrets.POSTGRES_DB }}
       # The hostname used to communicate with the Redis service container
       REDIS_HOST: redis
       # The default Redis port
@@ -83,6 +83,10 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
                     
-      - run: docker pull minio/minio
-      - run: npm install
-      - run: npm run test:worker
+      #- run: docker pull minio/minio
+      - name: Run Install Dependencies
+        run: npm install
+      - name: Run Test Linter
+        run: npm run lint
+      - name: Run Integration Test
+        run: npm run test:worker
