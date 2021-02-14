@@ -10,9 +10,9 @@ const defaultConfig = {
     database: 'database',
   },
   server: {
-    task_port: 80,
-    worker_port: 81,
-    performance_port: 82,
+    task_port: 7002,
+    worker_port: 7001,
+    performance_port: 7003,
   },
   minio: {
     endPoint: '127.0.0.1',
