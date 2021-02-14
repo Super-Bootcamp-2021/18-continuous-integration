@@ -1,7 +1,91 @@
+# # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+# name: task
+
+# on:
+#   push:
+#     branches: [ task ]
+
+# jobs:
+#   build:
+#     services:
+#       nats:
+#         image: nats
+#         ports:
+#           - 4222:4222
+#       redis:
+#         image: redis
+#         options: >-
+#           --health-cmd "redis-cli ping"
+#           --health-interval 10s
+#           --health-timeout 5s
+#           --health-retries 5
+#         ports:
+#           - 6379:6379
+#       minio:
+#         image: bitnami/minio:latest
+#         env:
+#           MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
+#           MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+#         ports:
+#           - 9000:9000
+#         options: --name minio-server
+#       postgres:
+#         image: postgres:11
+#         env:
+#           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+#           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+#         options: >-
+#           --health-cmd pg_isready
+#           --health-interval 10s
+#           --health-timeout 5s
+#           --health-retries 5
+#         ports:
+#           - 5432:5432
+
+#     runs-on: ubuntu-latest
+#     env:
+#       tm_database__password: ${{ secrets.POSTGRES_PASSWORD }}
+#       tm_database__database: ${{ secrets.POSTGRES_DB }}
+#       tm_server__workerPort: ${{ secrets.WORKER_PORT }}
+#       tm_server__taskPort: ${{ secrets.TASK_PORT }}
+#       tm_server__performancePort: ${{ secrets.PERFORMANCE_PORT }}
+#       tm_minio__accessKey: ${{ secrets.MINIO_ACCESS_KEY }}
+#       tm_minio__secretKey: ${{ secrets.MINIO_SECRET_KEY }}
+#     defaults:
+#       run:
+#         working-directory: ./tugas
+#     steps:
+#     - uses: actions/checkout@v2
+#     - name: Use Node.js 14
+#       uses: actions/setup-node@v1
+#       with:
+#         node-version: 14
+#     - name: Cache node modules
+#       uses: actions/cache@v2
+#       env:
+#         cache-name: cache-node-modules
+#       with:
+#         # npm cache files are stored in `~/.npm` on Linux/macOS
+#         path: ~/.npm
+#         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+#         restore-keys: |
+#           ${{ runner.os }}-build-${{ env.cache-name }}-
+#           ${{ runner.os }}-build-
+#           ${{ runner.os }}-
+#     - name: Run Install Dependencies
+#       run: npm ci
+#     - name: Run Test Linter
+#       run: npm run lint
+#     - name: Run Integration Test
+#       run: npm run test:tasks
+
+
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: task
+name: push-task
 
 on:
   push:
@@ -9,7 +93,9 @@ on:
 
 jobs:
   build:
+    # Service containers to run with `container-job`
     services:
+      # Label used to access the service container
       nats:
         image: nats
         ports:
@@ -46,13 +132,14 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      tm_database__password: ${{ secrets.POSTGRES_PASSWORD }}
-      tm_database__database: ${{ secrets.POSTGRES_DB }}
-      tm_server__workerPort: ${{ secrets.WORKER_PORT }}
-      tm_server__taskPort: ${{ secrets.TASK_PORT }}
-      tm_server__performancePort: ${{ secrets.PERFORMANCE_PORT }}
-      tm_minio__accessKey: ${{ secrets.MINIO_ACCESS_KEY }}
-      tm_minio__secretKey: ${{ secrets.MINIO_SECRET_KEY }}
+      ## add secret on settings-secret-add new secret e.g name=POSTGRES_PASSWORD value=mypassword
+      server_database__password: ${{ secrets.POSTGRES_PASSWORD}}
+      server_database__database: ${{ secrets.POSTGRES_DB}}
+      server_minio__accessKey: ${{ secrets.MINIO_ACCESS_KEY}}
+      server_minio__secretKey: ${{ secrets.MINIO_SECRET_KEY}}
+      server_server__port___task: 7002
+      server_server__port___worker: 7001
+      server_server__port___performance: 7003
     defaults:
       run:
         working-directory: ./tugas
@@ -75,7 +162,7 @@ jobs:
           ${{ runner.os }}-build-
           ${{ runner.os }}-
     - name: Run Install Dependencies
-      run: npm ci
+      run: npm install
     - name: Run Test Linter
       run: npm run lint
     - name: Run Integration Test
