@@ -43,10 +43,10 @@ function requestCallback(options, form = null) {
         data += chunk.toString();
       });
       res.on('end', () => {
-        callback = {
+        const callback = {
           data: data,
-          statusCode: res.statusCode
-        }
+          statusCode: res.statusCode,
+        };
         resolve(callback);
       });
       res.on('error', (err) => {

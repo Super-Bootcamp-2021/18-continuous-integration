@@ -13,7 +13,7 @@ const {
 } = require('./task');
 const { saveFile, readFile, ERROR_FILE_NOT_FOUND } = require('../lib/storage');
 
-ERROR_WITHOUT_ID_PARAM = 'parameter id tidak ditemukan';
+const ERROR_WITHOUT_ID_PARAM = 'parameter id tidak ditemukan';
 
 function addSvc(req, res) {
   const busboy = new Busboy({ headers: req.headers });

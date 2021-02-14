@@ -14,7 +14,12 @@ const {
   ERROR_TASK_NOT_FOUND,
 } = require('../tasks/task');
 // const nock = require('nock');
-const { request, requestCallback, requestOther, addTask } = require('./request');
+const {
+  request,
+  requestCallback,
+  requestOther,
+  addTask,
+} = require('./request');
 const FormData = require('form-data');
 const fs = require('fs');
 const { ERROR_WORKER_NOT_FOUND } = require('../tasks/worker.client');
@@ -134,8 +139,8 @@ describe('task', () => {
         response = await request(
           `http://localhost:${config.server.taskPort}/list`
         );
-        data = JSON.parse(response)
-        
+        data = JSON.parse(response);
+
         response = await requestCallback(
           `http://localhost:${config.server.taskPort}/attachment/${data[0]['attachment']}`
         );
