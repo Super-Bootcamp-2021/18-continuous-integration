@@ -20,8 +20,7 @@ jobs:
         env:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          tm_pg__password: ${{ secrets.POSTGRES_PASSWORD }}
-          tm_pg__database: ${{ secrets.POSTGRES_DB }}
+          
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
@@ -35,8 +34,7 @@ jobs:
         env:
           MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
           MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
-          tm_minio__accessKey: ${{ secrets.MINIO_ACCESS_KEY }}
-          tm_minio__secretKey: ${{ secrets.MINIO_SECRET_KEY }}
+          
         ports:
           - 9000:9000
       nats:
@@ -49,6 +47,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ## add secret on settings-secret-add new secret e.g name=POSTGRES_PASSWORD value=mypassword
+      tm_pg__password: ${{ secrets.POSTGRES_PASSWORD }}
+      tm_pg__database: ${{ secrets.POSTGRES_DB }}
+      tm_minio__accessKey: ${{ secrets.MINIO_ACCESS_KEY }}
+      tm_minio__secretKey: ${{ secrets.MINIO_SECRET_KEY }}
       tm_server__taskPort: 7002
       tm_server__workerPort: 7001
     defaults:
