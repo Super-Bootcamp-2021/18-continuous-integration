@@ -89,15 +89,17 @@ describe('worker', () => {
     workerServer.stop();
   });
 
-  describe('worker', () => {    
-
+  describe('worker', () => {
     it('register worker', async () => {
       const form = new FormData();
       form.append('name', 'Moh. Ilham Burhanuddin');
       form.append('age', 23);
       form.append('bio', 'Ini adalah bio ilham');
       form.append('address', 'Bangkalan');
-      form.append('photo', fs.createReadStream(path.resolve(__dirname, 'gambar1.jpeg')));
+      form.append(
+        'photo',
+        fs.createReadStream(path.resolve(__dirname, 'gambar1.jpeg'))
+      );
 
       const response = await new Promise((resolve, reject) => {
         form.submit('http://localhost:7001/register', function (err, res) {
@@ -134,6 +136,34 @@ describe('worker', () => {
       expect(data).toHaveLength(1);
     });
 
+    it('info worker', async () => {
+      const get_worker = await request({
+        hostname: 'localhost',
+        port: 7001,
+        path: '/list',
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = JSON.parse(get_worker)[0];
+
+      const param = querystring.stringify({
+        id: data.id,
+      });
+      const response = await request({
+        hostname: 'localhost',
+        port: 7001,
+        path: `/info?${param}`,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
+      const result = JSON.parse(response);
+      expect(result).toStrictEqual(data);
+    });
+
     it('remove worker', async () => {
       const getoptions = {
         hostname: 'localhost',
@@ -148,7 +178,7 @@ describe('worker', () => {
       const getdata = await request(getoptions);
       const id = JSON.parse(getdata)[0];
       const postData = querystring.stringify({
-        'id': id.id
+        id: id.id,
       });
 
       const options = {
@@ -157,13 +187,13 @@ describe('worker', () => {
         path: `/remove?${postData}`,
         method: 'DELETE',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
       };
 
       const response = await request(options);
       const result = JSON.parse(response);
       expect(result).toStrictEqual(JSON.parse(getdata)[0]);
-    })
+    });
   });
 });
