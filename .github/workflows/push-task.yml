@@ -30,8 +30,8 @@ jobs:
       minio:
         image: minio
         env:
-          MINIO_ROOT_USER: ${{ secrets.MINIO_USER }}
-          MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_PASSWORD }}
+          MINIO_ACCESS_KEY: ${{ secrets.MINIO_USER }}
+          MINIO_SECRET_KEY: ${{ secrets.MINIO_PASSWORD }}
         ports:
           - 9000:9000
 
