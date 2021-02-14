@@ -6,9 +6,9 @@
   "scripts": {
     "start": "node .",
     "dev": "nodemon .",
-    "test:worker": "jest -- worker",
-    "test:task": "jest -- task ",
     "test": "jest",
+    "test:worker": "jest -- worker",
+    "test:tasks": "jest -- tasks",
     "lint": "eslint .",
     "docs": "jsdoc -c service/docs.json"
   },
@@ -20,21 +20,20 @@
     "eslint": "^7.19.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-prettier": "^3.3.1",
-    "form-data": "^3.0.0",
-    "jest": "^26.6.3",
     "jsdoc": "^3.6.6",
     "json-loader": "^0.5.7",
     "livereload": "^0.9.1",
-    "nock": "^13.0.7",
-    "node-fetch": "^2.6.1",
     "prettier": "^2.2.1",
     "style-loader": "^2.0.0",
-    "yaml-loader": "^0.6.0"
+    "yaml-loader": "^0.6.0",
+    "jest": "^26.6.3",
+    "nock": "^13.0.7",
+    "node-fetch": "^2.6.1"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.5.0",
     "busboy": "^0.3.1",
-    "eslint-plugin-jest": "^24.1.3",
+    "form-data": "^3.0.0",
     "mariadb": "^2.5.2",
     "mime-types": "^2.1.28",
     "minio": "^7.0.18",
