@@ -19,12 +19,13 @@ jobs:
         ports:
           - 6379:6379
       minio:
-        image: minio
+        image: bitnami/minio:latest
         env:
-          MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
-          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+          MINIO_ACCESS_KEY: minio
+          MINIO_SECRET_KEY: minio123
         ports:
           - 9000:9000
+        options: --name minio-server
       postgres:
         image: postgres:11
         env:
@@ -71,4 +72,4 @@ jobs:
     - name: Run Test Linter
       run: npm run lint
     - name: Run Integration Test
-      run: npm test:worker
+      run: npm test:Task
