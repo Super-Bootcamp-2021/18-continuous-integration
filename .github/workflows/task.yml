@@ -4,7 +4,7 @@
 name: tugas
 
 on:
-  puhsh:
+  push:
     branches: [ task ]
 
 jobs:
