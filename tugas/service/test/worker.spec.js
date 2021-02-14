@@ -62,6 +62,7 @@ describe('worker', () => {
   afterAll(async () => {
     await connection.close();
     server.stop();
+    bus.close();
   });
 
   describe('tambah data pekerja', () => {
