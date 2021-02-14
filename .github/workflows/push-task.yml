@@ -28,12 +28,13 @@ jobs:
         ports:
           - 5432:5432
       minio:
-        image: minio
+        image: bitnami/minio:latest
         env:
           MINIO_ACCESS_KEY: ${{ secrets.MINIO_USER }}
           MINIO_SECRET_KEY: ${{ secrets.MINIO_PASSWORD }}
         ports:
           - 9000:9000
+        options: --name minio-server
 
     runs-on: ubuntu-latest
     env:
