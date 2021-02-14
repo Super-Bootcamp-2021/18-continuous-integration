@@ -8,7 +8,7 @@ on:
     branches: [ develop ]
 
 jobs:
-  build:
+  worker:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -35,5 +35,5 @@ jobs:
       run: npm i
     - name: Run Test Linter
       run: npm run lint
-    - name: Run Integration Test
-      run: npm test
+    # - name: Run Integration Test
+    #   run: npm test:worker
