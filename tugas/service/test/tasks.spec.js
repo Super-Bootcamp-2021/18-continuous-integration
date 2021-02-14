@@ -78,7 +78,6 @@ describe('worker', () => {
   });
   beforeEach(async () => {
     await truncate();
-
   });
   afterAll(async () => {
     //await truncate();
