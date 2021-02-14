@@ -220,5 +220,92 @@ describe('worker', () => {
       const result = JSON.parse(response);
       expect(result).toStrictEqual(JSON.parse(getdata)[0]);
     });
+
+    it('error register worker (data tidak lengkap)', async () => {
+      const form = new FormData();
+      form.append('name', 'Moh. Ilham Burhanuddin');
+      form.append('age', 23);      
+      form.append(
+        'photo',
+        fs.createReadStream(path.resolve(__dirname, 'gambar1.jpeg'))
+      );
+
+      try {
+        await new Promise((resolve, reject) => {
+          form.submit('http://localhost:7001/register', function (err, res) {
+            if (err) {
+              reject(err);
+            }
+            let data = '';
+            res.on('data', (chunk) => {
+              data += chunk.toString();
+            });
+            res.on('end', () => {
+              resolve(data);
+            });
+          });
+        });
+      } catch(err) {        
+        expect(err).toBe('data registrasi pekerja tidak lengkap');      
+      }
+
+      // const data = JSON.parse(response);
+      // expect(data.name).toBe('data registrasi pekerja tidak lengkap');
+    });
+
+    it('error info worker (pekerja tidak ditemukan)', async () => {      
+      try {
+        const param = querystring.stringify({
+          id: '0',
+        });
+        await request({
+          hostname: 'localhost',
+          port: 7001,
+          path: `/info?${param}`,
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        });
+      } catch(err) {
+        expect(err).toBe('pekerja tidak ditemukan');
+      }      
+    });
+    
+    it('error photo worker (photo pekerja tidak ditemukan)', async () => {
+      try {
+        await request({
+          hostname: 'localhost',
+          port: 7001,
+          path: '/photo/tidak-ada-photo.jpg',
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        });
+      } catch(err) {
+        expect(err).toBe('pekerja tidak ditemukan');
+      }      
+    });
+
+    it('error remove worker (pekerja tidak ditemukan)', async () => {      
+      try {
+        const param = querystring.stringify({
+          id: '0',
+        });        
+
+        await request({
+          hostname: 'localhost',
+          port: 7001,
+          path: `/remove?${param}`,
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        });
+      } catch(err) {
+        expect(err).toBe('pekerja tidak ditemukan');
+      }      
+    });    
   });
 });
