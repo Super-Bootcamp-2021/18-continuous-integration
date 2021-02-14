@@ -46,7 +46,7 @@ function req(options, form = null) {
   });
 }
 
-describe.skip('Task Service', () => {
+describe('Task Service', () => {
   let connDB;
   let connStorage;
   let connBus;
