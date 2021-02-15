@@ -42,32 +42,32 @@ function request(options, form = null) {
   });
 }
 
-async function addData(){
-	const form = new FormData();
-		form.append('name', 'user 1');
-		form.append('age', 29);
-		form.append('bio', 'test');
-		form.append('address', 'jkt');
-		form.append('photo', fs.createReadStream('assets/nats.png'));
+async function addData() {
+  const form = new FormData();
+  form.append('name', 'user 1');
+  form.append('age', 29);
+  form.append('bio', 'test');
+  form.append('address', 'jkt');
+  form.append('photo', fs.createReadStream('assets/nats.png'));
 
-		const response = await new Promise((resolve, reject) => {
-			form.submit(
-				`http://localhost:${config.serverWorker.port}/register`,
-				function (err, res) {
-					if (err) {
-						reject(err);
-					}
-					let data = '';
-					res.on('data', (chunk) => {
-						data += chunk.toString();
-					});
-					res.on('end', () => {
-						resolve(data);
-					});
-				}
-			);
-		});
-		return JSON.parse(response);
+  const response = await new Promise((resolve, reject) => {
+    form.submit(
+      `http://localhost:${config.serverWorker.port}/register`,
+      function (err, res) {
+        if (err) {
+          reject(err);
+        }
+        let data = '';
+        res.on('data', (chunk) => {
+          data += chunk.toString();
+        });
+        res.on('end', () => {
+          resolve(data);
+        });
+      }
+    );
+  });
+  return JSON.parse(response);
 }
 
 describe('worker', () => {
@@ -103,45 +103,45 @@ describe('worker', () => {
     bus.close();
     workerServer.stop();
   });
-	it('get worker', async () => {
-		const options = {
-			hostname: 'localhost',
-			port: config.serverWorker.port,
-			path: '/list',
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		};
-		const response = await request(options);
-		const data = JSON.parse(response);
-		expect(data).toHaveLength(0);
-	});
+  it('get worker', async () => {
+    const options = {
+      hostname: 'localhost',
+      port: config.serverWorker.port,
+      path: '/list',
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const response = await request(options);
+    const data = JSON.parse(response);
+    expect(data).toHaveLength(0);
+  });
 
-	it('add worker', async () => {
-		const data = await addData();
-		expect(data.name).toBe('user 1');
-		expect(data.age).toBe(29);
-		expect(data.bio).toBe('test');
-		expect(data.addres).toBe('jkt');
-	});
-	
-	it('get info worker', async () => {
-		const data = await addData();
-		const options = {
-			hostname: 'localhost',
-			port: config.serverWorker.port,
-			path: `/info?id=${data.id}`,
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		};
-		const response = await request(options);
-		const data2 = JSON.parse(response);
-		expect(data2.name).toBe('user 1');
-		expect(data2.age).toBe(29);
-		expect(data2.bio).toBe('test');
-		expect(data2.addres).toBe('jkt');
-	});
+  it('add worker', async () => {
+    const data = await addData();
+    expect(data.name).toBe('user 1');
+    expect(data.age).toBe(29);
+    expect(data.bio).toBe('test');
+    expect(data.addres).toBe('jkt');
+  });
+
+  it('get info worker', async () => {
+    const data = await addData();
+    const options = {
+      hostname: 'localhost',
+      port: config.serverWorker.port,
+      path: `/info?id=${data.id}`,
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const response = await request(options);
+    const data2 = JSON.parse(response);
+    expect(data2.name).toBe('user 1');
+    expect(data2.age).toBe(29);
+    expect(data2.bio).toBe('test');
+    expect(data2.addres).toBe('jkt');
+  });
 });
