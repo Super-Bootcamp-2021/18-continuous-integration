@@ -4,6 +4,7 @@ const { WorkerSchema } = require('../worker/worker.model');
 const { TaskSchema } = require('../tasks/task.model');
 const { config } = require('../config');
 const server = require('../tasks/server');
+const serverWorker = require('../worker/server');
 const http = require('http');
 const FormData = require('form-data');
 const fs = require('fs');
@@ -17,6 +18,7 @@ describe('pekerjaan', () => {
   beforeAll(async () => {
     connection = await connect([WorkerSchema, TaskSchema], config.database);
     server.run();
+    serverWorker.run();
     bus.connect();
     storage.connect('task-manager', config.objectStorage);
   });
@@ -24,18 +26,44 @@ describe('pekerjaan', () => {
   afterAll(async () => {
     await connection.close();
     server.stop();
+    serverWorker.stop();
     bus.close();
   });
 
   describe('daftar pekerjaan', () => {
     it.only('menambah pekerjaan baru', async () => {
       truncate();
+      const formWorker = new FormData();
+      formWorker.append('name', 'Budi');
+      formWorker.append('age', 30);
+      formWorker.append('bio', 'coba bio');
+      formWorker.append('address', 'Yogyakarta');
+      formWorker.append('photo', fs.createReadStream('img/dino.png'));
+
+      await new Promise((resolve, reject) => {
+        formWorker.submit(
+          'http://localhost:7001/register',
+          function (err, res) {
+            if (err) {
+              reject(err);
+            }
+            let data = '';
+            res.on('data', (chunk) => {
+              data += chunk.toString();
+            });
+            res.on('end', () => {
+              resolve(data);
+            });
+          }
+        );
+      });
+
       nock('http://localhost:7001').get('/info?id=1').reply(200, {
         id: 1,
-        name: 'budi',
-        age: '45',
-        bio: 'adsada',
-        address: 'adasdada',
+        name: 'Budi',
+        age: '30',
+        bio: 'coba bio',
+        address: 'Yogyakarta',
         photo: '1612852721622-913.png',
       });
 
