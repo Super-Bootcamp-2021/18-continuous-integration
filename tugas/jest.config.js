@@ -3,5 +3,5 @@ module.exports = {
   testRegex: '(/__tests_/.*|\\.(spec))\\.(js)$',
   coverageDirectory: './service/tasks',
   roots: ['./service'],
-  testEnvironment: 'node'
+  testEnvironment: 'node',
 };

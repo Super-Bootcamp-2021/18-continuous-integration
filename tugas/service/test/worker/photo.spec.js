@@ -9,6 +9,7 @@ const FormData = require('form-data');
 const fs = require('fs');
 const { truncate } = require('../../worker/worker');
 const http = require('http');
+const { config } = require('../../config');
 
 function request(options, form = null) {
   return new Promise((resolve, reject) => {
@@ -45,25 +46,12 @@ describe('Get Photo Worker', () => {
   let connection;
   beforeAll(async () => {
     try {
-      connection = await orm.connect([WorkerSchema], {
-        type: 'postgres',
-        host: 'localhost',
-        port: 5432,
-        username: 'testing',
-        password: '',
-        database: 'sanbercode5',
-      });
+      connection = await orm.connect([WorkerSchema], config.pg);
     } catch (err) {
       console.error('database connection failed');
     }
     try {
-      await storage.connect('photo', {
-        endPoint: '192.168.0.8',
-        port: 9000,
-        useSSL: false,
-        accessKey: 'minioadmin',
-        secretKey: 'minioadmin',
-      });
+      await storage.connect('photo', config.minio);
     } catch (err) {
       console.error('object storage connection failed');
     }
@@ -147,7 +135,7 @@ describe('Get Photo Worker', () => {
     //   const res = await request(options)
     //   console.log(res)
     // }).toThrow();
-      const response = await request(options);
-      expect(response).toBe('error file tidak ditemukan');
+    const response = await request(options);
+    expect(response).toBe('error file tidak ditemukan');
   });
 });

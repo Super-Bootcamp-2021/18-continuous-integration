@@ -7,30 +7,18 @@ const workerServer = require('../../worker/server');
 const FormData = require('form-data');
 const fs = require('fs');
 const { truncate } = require('../../worker/worker');
+const { config } = require('../../config');
 
 describe('Register Worker', () => {
   let connection;
   beforeAll(async () => {
     try {
-      connection = await orm.connect([WorkerSchema], {
-        type: 'postgres',
-        host: 'localhost',
-        port: 5432,
-        username: 'testing',
-        password: '',
-        database: 'sanbercode5',
-      });
+      connection = await orm.connect([WorkerSchema], config.pg);
     } catch (err) {
       console.error('database connection failed');
     }
     try {
-      await storage.connect('task-manager', {
-        endPoint: '192.168.0.8',
-        port: 9000,
-        useSSL: false,
-        accessKey: 'minioadmin',
-        secretKey: 'minioadmin',
-      });
+      await storage.connect('photo', config.minio);
     } catch (err) {
       console.error('object storage connection failed');
     }

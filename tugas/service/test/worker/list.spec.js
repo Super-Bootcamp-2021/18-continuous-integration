@@ -6,6 +6,7 @@ const { WorkerSchema } = require('../../worker/worker.model');
 const workerServer = require('../../worker/server');
 const { truncate } = require('../../worker/worker');
 const http = require('http');
+const { config } = require('../../config');
 
 function request(options, form = null) {
   return new Promise((resolve, reject) => {
@@ -42,25 +43,12 @@ describe('worker', () => {
   let connection;
   beforeAll(async () => {
     try {
-      connection = await orm.connect([WorkerSchema], {
-        type: 'postgres',
-        host: 'localhost',
-        port: 5432,
-        username: 'testing',
-        password: '',
-        database: 'sanbercode5',
-      });
+      connection = await orm.connect([WorkerSchema], config.pg);
     } catch (err) {
       console.error('database connection failed');
     }
     try {
-      await storage.connect('task-manager', {
-        endPoint: '192.168.0.8',
-        port: 9000,
-        useSSL: false,
-        accessKey: 'minioadmin',
-        secretKey: 'minioadmin',
-      });
+      await storage.connect('photo', config.minio);
     } catch (err) {
       console.error('object storage connection failed');
     }
@@ -82,44 +70,44 @@ describe('worker', () => {
   });
 
   // describe('Success', () => {
-    it('get worker', async () => {
-      const options = {
-        hostname: 'localhost',
-        port: 7001,
-        path: '/list',
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
+  it('get worker', async () => {
+    const options = {
+      hostname: 'localhost',
+      port: 7001,
+      path: '/list',
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
 
-      const response = await request(options);
-      const data = JSON.parse(response);
-      expect(data).toHaveLength(0);
-    });
+    const response = await request(options);
+    const data = JSON.parse(response);
+    expect(data).toHaveLength(0);
+  });
   // });
 
   // describe('Error', () => {
-    it.skip('couldn\'t get worker', () => {
-      const options = {
-        hostname: 'localhost',
-        port: 7001,
-        path: '/list',
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      }
+  it.skip("couldn't get worker", () => {
+    const options = {
+      hostname: 'localhost',
+      port: 7001,
+      path: '/list',
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
 
-      // try {
-      //   const response = await request(options);
-      // } catch (err) {
-      //   // expect(err).toBeFalsy()
-      //   expect(err).toThrow(err)
-      // }
-      expect(async () => {
-        await request(options)
-      }).toThrow()
-    })
+    // try {
+    //   const response = await request(options);
+    // } catch (err) {
+    //   // expect(err).toBeFalsy()
+    //   expect(err).toThrow(err)
+    // }
+    expect(async () => {
+      await request(options);
+    }).toThrow();
+  });
   // })
 });

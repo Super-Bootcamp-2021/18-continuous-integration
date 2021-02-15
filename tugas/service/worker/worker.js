@@ -55,11 +55,10 @@ async function remove(id) {
 async function truncate() {
   const entities = getConnection().entityMetadatas;
 
+  // eslint-disable-next-line no-unused-vars
   for (const entity of entities) {
-    const repository = await getConnection().getRepository(entity.name); // Get repository
+    const repository = await getConnection().getRepository('Worker'); // Get repository
     try {
-      // change clear to delete for reference table issue
-
       await repository.delete({}); // Clear each entity table's content
     } catch (error) {
       console.log(error);
