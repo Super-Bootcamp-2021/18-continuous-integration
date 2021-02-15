@@ -123,7 +123,7 @@ describe('worker', () => {
     expect(data.name).toBe('user 1');
     expect(data.age).toBe(29);
     expect(data.bio).toBe('test');
-    expect(data.addres).toBe('jkt');
+    expect(data.address).toBe('jkt');
   });
 
   it('get info worker', async () => {
@@ -142,6 +142,6 @@ describe('worker', () => {
     expect(data2.name).toBe('user 1');
     expect(data2.age).toBe(29);
     expect(data2.bio).toBe('test');
-    expect(data2.addres).toBe('jkt');
+    expect(data2.address).toBe('jkt');
   });
 });
