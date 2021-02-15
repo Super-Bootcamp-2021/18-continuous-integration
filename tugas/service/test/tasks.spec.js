@@ -31,7 +31,7 @@ describe('pekerjaan', () => {
   });
 
   describe('daftar pekerjaan', () => {
-    it.only('menambah pekerjaan baru', async () => {
+    it('menambah pekerjaan baru', async () => {
       truncate();
       const formWorker = new FormData();
       formWorker.append('name', 'Budi');
