@@ -15,7 +15,6 @@ const fs = require('fs');
 const path = require('path');
 const http = require('http');
 const FormData = require('form-data');
-const task = require('../../tasks/task');
 
 async function workerServerSetup() {
   try {
@@ -182,16 +181,16 @@ describe('Get Attachment', () => {
     });
 
     it('should error task attachment not found', async () => {
-    const options = {
+      const options = {
         hostname: 'localhost',
         port: 7002,
         path: `/attachment/zzzzzzz.txt`,
         method: 'GET',
-    };
-    const response = await request(options);
+      };
+      const response = await request(options);
 
-    expect(response.code).toBe(404);
-    expect(response.data).toBe(storage.ERROR_FILE_NOT_FOUND);
+      expect(response.code).toBe(404);
+      expect(response.data).toBe(storage.ERROR_FILE_NOT_FOUND);
     });
   });
 });
