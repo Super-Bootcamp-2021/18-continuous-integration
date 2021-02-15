@@ -41,13 +41,6 @@ function request(options, form = null) {
 
 describe('Worker Service', () => {
   let connection;
-  // const form = new FormData();
-  // form.append('id', 2);
-  // form.append('name', 'Dani');
-  // form.append('age', 22);
-  // form.append('photo', fs.createReadStream('./service/test/gambar.jpg'));
-  // form.append('bio', 'Hello World!!!');
-  // form.append('address', 'Malang');
 
   beforeAll(async () => {
     try {
@@ -83,7 +76,7 @@ describe('Worker Service', () => {
     const form = new FormData();
     form.append('name', 'Angga');
     form.append('age', 23);
-    form.append('photo', fs.createReadStream('assets/gambar.jpg'));
+    form.append('photo', fs.createReadStream('service/test/gambar/contoh.jpg'));
     form.append('bio', 'Hello World!!!');
     form.append('address', 'Nganjuk');
     await new Promise((resolve, reject) => {
@@ -113,24 +106,6 @@ describe('Worker Service', () => {
 
   describe('Pekerja', () => {
     it('Seharusnya bisa menampilkan pekerja', async () => {
-      // const req = http.request(`http://localhost:7001/list`, (res) => {
-      //   let data = '';
-      //   res.on('data', (chunk) => {
-      //     data += chunk.toString();
-      //   });
-      //   res.on('end', () => {
-      //     const worker = JSON.stringify(data);
-      //     const db = JSON.parse(data);
-      //     console.log(db);
-      //     console.log('DATA: ' + db[0].name);
-      //     resolve(worker);
-      //     expect(db[0].name).toBe('Dika');
-      //   });
-      //   res.on('error', (err) => {
-      //     reject(err.message || err.toString());
-      //   });
-      // });
-      // req.end();
       const options = {
         hostname: 'localhost',
         port: 7001,
@@ -147,34 +122,13 @@ describe('Worker Service', () => {
     });
 
     it('Seharusnya bisa menambah pekerja', async () => {
-      // const request = http.request({
-      //   method: 'POST',
-      //   host: 'localhost',
-      //   port: 7001,
-      //   path: '/register',
-      //   headers: {
-      //     'Content-Type': 'multipart/form-data',
-      //   },
-      //   formData: {
-      //     id: 1,
-      //     name: 'Dani',
-      //     age: 22,
-      //     photo: fs.createReadStream('./service/test/gambar.jpg'),
-      //     bio: 'Hello World!!!',
-      //     address: 'Malang',
-      //   },
-      // });
-
-      // form.pipe(request);
-
-      // request.on('response', function (res) {
-      //   console.log(res.statusCode);
-      //   expect(res.name).toBe('1');
-      // });
       const form = new FormData();
       form.append('name', 'Dani');
       form.append('age', 22);
-      form.append('photo', fs.createReadStream('assets/gambar.jpg'));
+      form.append(
+        'photo',
+        fs.createReadStream('service/test/gambar/contoh.jpg')
+      );
       form.append('bio', 'Hello World!!!');
       form.append('address', 'Malang');
       const response = await new Promise((resolve, reject) => {
@@ -209,25 +163,6 @@ describe('Worker Service', () => {
     });
 
     it('Seharusnya bisa menghapus pekerja', async () => {
-      // const response = await new Promise((resolve, reject) => {
-      //   const req = http.request('http://localhost:7001/remove?id=1', (res) => {
-      //     let data = '';
-      //     if (res.statusCode === 404) {
-      //       reject('pekerja tidak ditemukan');
-      //     }
-      //     res.on('data', (chunk) => {
-      //       data += chunk.toString();
-      //     });
-      //     res.on('end', () => {
-      //       const worker = JSON.stringify(data);
-      //       resolve(worker);
-      //     });
-      //     res.on('error', (err) => {
-      //       reject(err.message || err.toString());
-      //     });
-      //   });
-      //   req.end();
-      // });
       const options = {
         host: 'localhost',
         port: 7001,
@@ -275,8 +210,6 @@ describe('Worker Service', () => {
         req.end();
       });
       expect(contentType).toBe('image/jpeg');
-      // const options2 = `http://localhost:7001/photo/${photo}`;
-      // const response2 = await request(options2);
     });
   });
 });
