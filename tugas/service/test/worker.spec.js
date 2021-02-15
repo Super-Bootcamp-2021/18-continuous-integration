@@ -87,7 +87,6 @@ describe('worker', () => {
           'Content-Type': 'application/json',
         },
       };
-
       const response = await request(options);
       const data = JSON.parse(response);
       expect(data).toHaveLength(0);
@@ -121,6 +120,22 @@ describe('worker', () => {
 
       const data = JSON.parse(response);
       expect(data.name).toBe('user 1');
+    });
+    it('get info worker', async () => {
+      http.get('http://localhost:7001/info?id=4', (res) => {
+        let response = '';
+        res.on('data', (d) => {
+          response += d;
+        });
+        res.on('end', () => {
+          try {
+            const parsedData = JSON.parse(response);
+            expect(parsedData.name).toBe('Makmur');
+          } catch (e) {
+            console.error(e.message);
+          }
+        });
+      });
     });
   });
 });
