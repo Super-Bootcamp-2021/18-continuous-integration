@@ -165,34 +165,5 @@ describe('Task Add', () => {
       expect(response.code).toBe(401);
       expect(response.data).toBe(taskModel.ERROR_TASK_DATA_INVALID);
     });
-
-    // it('should show error "internal server error" ', async () => {
-    //   jest.setTimeout(30000);
-    //   const form = new FormData();
-    //   const test = {
-    //     job:"jual geprek",
-    //     assignee_id:workerData.id,
-    //   }
-    //   form.append("job",test.job);
-    //   form.append("assignee_id",test.assignee_id);
-
-    //   const response = await new Promise((resolve, reject) => {
-    //     form.submit('http://localhost:7002/add', function (err, res) {
-    //       if (err) {
-    //         reject(err);
-    //       }
-    //       let data = '';
-    //       res.on('data', (chunk) => {
-    //         data += chunk.toString();
-    //       });
-    //       res.on('end', () => {
-
-    //         resolve({code:res.statusCode,data:data});
-    //       });
-    //     });
-    //   });
-
-    //   expect(response.code).toBe(500);
-    // });
   });
 });
