@@ -7,7 +7,6 @@ const workerServer = require('../../worker/server');
 const FormData = require('form-data');
 const fs = require('fs');
 const { truncate } = require('../../worker/worker');
-const http = require('http');
 
 describe('Register Worker', () => {
   let connection;
@@ -78,4 +77,31 @@ describe('Register Worker', () => {
     const data = JSON.parse(response);
     expect(data.name).toBe('user 1');
   });
+
+  it.skip('error add worker', () => {
+    const form = new FormData();
+    form.append('name', 'user 1');
+    form.append('bio', 'test');
+    form.append('address', 'jkt');
+    form.append('photo', fs.createReadStream('assets/nats.png'));
+
+        const response = await new Promise((resolve, reject) => {
+      form.submit('http://localhost:7001/register', function (err, res) {
+        if (err) {
+          reject(err);
+        }
+        let data = '';
+        res.on('data', (chunk) => {
+          data += chunk.toString();
+        });
+        res.on('end', () => {
+          resolve(data);
+        });
+      });
+    });
+
+    // const data = JSON.parse(response);
+    console.log(response)
+    // expect(data.name).toBe('user 1');
+  })
 })

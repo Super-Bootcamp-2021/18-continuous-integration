@@ -4,8 +4,6 @@ const storage = require('../../lib/storage');
 const bus = require('../../lib/bus');
 const { WorkerSchema } = require('../../worker/worker.model');
 const workerServer = require('../../worker/server');
-const FormData = require('form-data');
-const fs = require('fs');
 const { truncate } = require('../../worker/worker');
 const http = require('http');
 
@@ -83,7 +81,7 @@ describe('worker', () => {
     workerServer.stop();
   });
 
-  describe('worker', () => {
+  // describe('Success', () => {
     it('get worker', async () => {
       const options = {
         hostname: 'localhost',
@@ -99,5 +97,29 @@ describe('worker', () => {
       const data = JSON.parse(response);
       expect(data).toHaveLength(0);
     });
-  });
+  // });
+
+  // describe('Error', () => {
+    it.skip('couldn\'t get worker', () => {
+      const options = {
+        hostname: 'localhost',
+        port: 7001,
+        path: '/list',
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }
+
+      // try {
+      //   const response = await request(options);
+      // } catch (err) {
+      //   // expect(err).toBeFalsy()
+      //   expect(err).toThrow(err)
+      // }
+      expect(async () => {
+        await request(options)
+      }).toThrow()
+    })
+  // })
 });

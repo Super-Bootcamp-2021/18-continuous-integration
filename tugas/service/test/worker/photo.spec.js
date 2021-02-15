@@ -14,9 +14,9 @@ function request(options, form = null) {
   return new Promise((resolve, reject) => {
     const req = http.request(options, (res) => {
       let data = '';
-      if (res.statusCode === 404) {
-        reject(ERROR_WORKER_NOT_FOUND);
-      }
+      // if (res.statusCode === 404) {
+      //   reject(ERROR_WORKER_NOT_FOUND);
+      // }
       res.on('data', (chunk) => {
         data += chunk.toString();
       });
@@ -57,7 +57,7 @@ describe('Get Photo Worker', () => {
       console.error('database connection failed');
     }
     try {
-      await storage.connect('task-manager', {
+      await storage.connect('photo', {
         endPoint: '192.168.0.8',
         port: 9000,
         useSSL: false,
@@ -121,7 +121,6 @@ describe('Get Photo Worker', () => {
     try {
       const response = await request(options);
       const data = JSON.parse(response);
-      console.log(data);
       photoName = data[0].photo;
     } catch (err) {
       console.error(err);
@@ -131,10 +130,24 @@ describe('Get Photo Worker', () => {
 
     try {
       const response = await request(options);
-      console.log(response);
       expect(response).toBeTruthy();
     } catch (err) {
       console.error(err);
     }
+  });
+
+  it('error get photo', async () => {
+    const options = {
+      hostname: 'localhost',
+      port: 7001,
+      path: '/photo/img.jpg',
+      method: 'GET',
+    };
+    // expect(async () => {
+    //   const res = await request(options)
+    //   console.log(res)
+    // }).toThrow();
+      const response = await request(options);
+      expect(response).toBe('error file tidak ditemukan');
   });
 });
