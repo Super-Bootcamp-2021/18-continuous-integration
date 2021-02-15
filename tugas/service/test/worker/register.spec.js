@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 
-describe('task', () => {
-  describe('task', () => {
+describe.skip('worker', () => {
+  describe('worker', () => {
     it('get test', async () => {
       const test = 'test';
       expect(test).toBe('test');

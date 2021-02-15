@@ -14,21 +14,23 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "css-loader": "^5.0.1",
     "eslint": "^7.19.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-prettier": "^3.3.1",
     "jest": "^26.6.3",
-    "prettier": "^2.2.1",
-    "css-loader": "^5.0.1",
     "nock": "^13.0.7",
     "node-fetch": "^2.6.1",
+    "prettier": "^2.2.1",
     "style-loader": "^2.0.0",
     "webpack": "^5.17.0",
     "webpack-cli": "^4.4.0",
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^1.5.0",
     "busboy": "^0.3.1",
+    "form-data": "^2.3.3",
     "mariadb": "^2.5.2",
     "mime-types": "^2.1.28",
     "minio": "^7.0.18",
@@ -38,9 +40,8 @@
     "pg": "^8.5.1",
     "pg-hstore": "^2.3.3",
     "redis": "^3.0.2",
-    "typeorm": "^0.2.30",
-    "@reduxjs/toolkit": "^1.5.0",
+    "redux-thunk": "^2.3.0",
     "rxjs": "^6.6.3",
-    "redux-thunk": "^2.3.0"
+    "typeorm": "^0.2.30"
   }
 }
