@@ -36,8 +36,8 @@ jobs:
         #   MINIO_ACCESS_KEY: minioadmin
         #   MINIO_SECRET_KEY: minioadmin
         env:
-          MINIO_ROOT_USER: ${{ secrets.MINIO_ACCESS_KEY }}
-          MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_SECRET_KEY }}
+          MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
+          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
         ports:
           - 9000:9000
         options: --name minio-server
