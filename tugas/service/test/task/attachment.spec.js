@@ -15,7 +15,6 @@ const fs = require('fs');
 const path = require('path');
 const http = require('http');
 const FormData = require('form-data');
-const task = require('../../tasks/task');
 
 async function workerServerSetup() {
   try {
@@ -130,7 +129,7 @@ function request(options) {
   });
 }
 
-describe('Task Cancel', () => {
+describe('Get Attachment', () => {
   let connection;
 
   beforeAll(async () => {
@@ -162,59 +161,36 @@ describe('Task Cancel', () => {
     taskServer.stop();
   });
 
-  describe('cancel task', () => {
+  describe('get attachment file', () => {
     let workerData;
     beforeEach(async () => {
       workerData = await initWorkerData();
       taskData = await initTaskData(workerData.id);
     });
 
-    it('should success cancel task', async () => {
+    it('should success get attachment task', async () => {
       const options = {
         hostname: 'localhost',
         port: 7002,
-        path: `/cancel?id=${taskData.id}`,
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        path: `/attachment/${taskData.attachment}`,
+        method: 'GET',
       };
       const response = await request(options);
 
       expect(response.code).toBe(200);
-      expect(response.data).toHaveProperty('cancelled', true);
     });
 
-    it('should error not found parameter id', async () => {
+    it('should error task attachment not found', async () => {
       const options = {
         hostname: 'localhost',
         port: 7002,
-        path: `/cancel`,
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
-      const response = await request(options);
-
-      expect(response.code).toBe(401);
-      expect(response.data).toBe('parameter id tidak ditemukan');
-    });
-
-    it('should error task not found', async () => {
-      const options = {
-        hostname: 'localhost',
-        port: 7002,
-        path: `/cancel?id=9000`,
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        path: `/attachment/zzzzzzz.txt`,
+        method: 'GET',
       };
       const response = await request(options);
 
       expect(response.code).toBe(404);
-      expect(response.data).toBe(task.ERROR_TASK_NOT_FOUND);
+      expect(response.data).toBe(storage.ERROR_FILE_NOT_FOUND);
     });
   });
 });
