@@ -25,7 +25,6 @@ function request(options, form = null) {
         reject((err && err.message) || err.toString());
       });
     });
-
     req.on('error', (error) => {
       console.error(error);
     });

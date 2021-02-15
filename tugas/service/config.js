@@ -2,12 +2,12 @@ const rc = require('rc');
 
 const defaultConfig = {
   database: {
-    type: 'mysql',
+    type: 'postgres',
     host: 'localhost',
-    port: 3306,
-    username: 'root',
-    password: '',
-    database: 'dubnium',
+    port: 5432,
+    username: 'postgres',
+    password: 'postgres',
+    database: 'database',
   },
   objectStorage: {
     endPoint: '127.0.0.1',
