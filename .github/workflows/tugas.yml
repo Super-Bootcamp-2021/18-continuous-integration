@@ -6,19 +6,70 @@ name: tugas
 on:
   pull_request:
     branches: [ develop ]
+  push:
+    branches:    
+      - master
+      - 'feature*'
+
+env:
+  ## add secret on settings-secret-add new secret e.g name=POSTGRES_PASSWORD value=mypassword
+  tm_database__password: ${{ secrets.POSTGRES_PASSWORD }}
+  tm_database__database: ${{ secrets.POSTGRES_DB }}
+  tm_storage__accessKey: ${{ secrets.MINIO_ACCESS }}
+  tm_storage__secretKey: ${{ secrets.MINIO_SECRET }}  
 
 jobs:
-  build:
+  worker-test:
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres:11
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      redis:
+        # Docker Hub image
+        image: redis
+        #
+        ports:
+          # Opens tcp port 6379 on the host and service container
+          - 6379:6379
+      nats:
+        # Docker Hub image
+        image: nats
+        ports:
+          - 4222:4222
+      minio:
+        image: lazybit/minio
+        ports:
+          - 9000:9000
+        env:
+          MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS }}
+          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET }}
+        options: --name=minio --health-cmd "curl http://localhost:9000/minio/health/live"
     runs-on: ubuntu-latest
+    env:
+      tm_serverWorker__port: 7001
     defaults:
       run:
         working-directory: ./tugas
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js 12
+    - name: Use Node.js 14
       uses: actions/setup-node@v1
       with:
-        node-version: 12
+        node-version: 14
     - name: Cache node modules
       uses: actions/cache@v2
       env:
@@ -36,4 +87,72 @@ jobs:
     - name: Run Test Linter
       run: npm run lint
     - name: Run Integration Test
-      run: npm test
+      run: npm run worker:test
+      
+  task-test:
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres:11
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      redis:
+        # Docker Hub image
+        image: redis
+        #
+        ports:
+          # Opens tcp port 6379 on the host and service container
+          - 6379:6379
+      nats:
+        # Docker Hub image
+        image: nats
+        ports:
+          - 4222:4222
+      minio:
+        image: lazybit/minio
+        ports:
+          - 9000:9000
+        env:
+          MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS }}
+          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET }}
+        options: --name=minio --health-cmd "curl http://localhost:9000/minio/health/live"
+    runs-on: ubuntu-latest
+    env:
+      tm_serverTask__port: 7002
+    defaults:
+      run:
+        working-directory: ./tugas
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 14
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14
+    - name: Cache node modules
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-node-modules
+      with:
+        # npm cache files are stored in `~/.npm` on Linux/macOS
+        path: ~/.npm
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+    - name: Run Install Dependencies
+      run: npm i
+    - name: Run Integration Test
+      run: npm run task:test

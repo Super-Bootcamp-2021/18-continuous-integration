@@ -1,126 +1,128 @@
 /* eslint-disable no-undef */
-const { connect } = require('../lib/orm');
+const orm = require('../lib/orm');
+const storage = require('../lib/storage');
+const bus = require('../lib/bus');
 const { WorkerSchema } = require('../worker/worker.model');
-// const { config } = require('../config');
-const server = require('../worker/server');
-// const fetch = require('node-fetch');
-// const { truncate } = require('../todo');
-// const nock = require('nock');
+const { TaskSchema } = require('../tasks/task.model');
+const workerServer = require('../worker/server');
+const FormData = require('form-data');
+const fs = require('fs');
+const { truncate } = require('../worker/worker');
 const http = require('http');
+const { config } = require('../config');
 
-describe('Workers Test', () => {
+function request(options, form = null) {
+  return new Promise((resolve, reject) => {
+    const req = http.request(options, (res) => {
+      let data = '';
+      if (res.statusCode === 404) {
+        reject(ERROR_WORKER_NOT_FOUND);
+      }
+      res.on('data', (chunk) => {
+        data += chunk.toString();
+      });
+      res.on('end', () => {
+        resolve(data);
+      });
+      res.on('error', (err) => {
+        reject((err && err.message) || err.toString());
+      });
+    });
+    req.on('error', (error) => {
+      console.error(error);
+    });
+    if (form) {
+      form.pipe(req);
+      req.on('response', function (res) {
+        console.log(res.statusCode);
+      });
+    } else {
+      req.end();
+    }
+  });
+}
+
+describe('worker', () => {
   let connection;
   beforeAll(async () => {
-    connection = await connect([WorkerSchema], {
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: '123',
-      database: 'database',
-    });
-    server.run();
+    try {
+      connection = await orm.connect(
+        [WorkerSchema, TaskSchema],
+        config.database
+      );
+    } catch (err) {
+      console.error('database connection failed');
+    }
+    try {
+      await storage.connect('task-manager', config.storage);
+    } catch (err) {
+      console.error(err);
+      console.error('object storage connection failed');
+    }
+    try {
+      await bus.connect();
+    } catch (err) {
+      console.error('message bus connection failed');
+    }
+    workerServer.run();
   });
   beforeEach(async () => {
-    const postData = JSON.stringify({
-      name: 'budi',
-      age: 23,
-      bio: 'doyan makan',
-      address: 'Jakarta',
-      photo: 'worker.jpg',
-    });
-
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-
-    const req = http.request(
-      `http://localhost:7001/register`,
-      options,
-      (res) => {
-        res.setEncoding('utf8');
-        let response = '';
-        res.on('data', (d) => {
-          response += d;
-        });
-        res.on('end', () => {
-          // const parsedData = JSON.parse(response);
-          console.log(response);
-        });
-      }
-    );
-
-    // Write data to request body
-    req.write(postData);
-    req.end();
+    await truncate();
   });
   afterAll(async () => {
+    //await truncate();
     await connection.close();
-    server.stop();
+    bus.close();
+    workerServer.stop();
   });
 
-  describe('Workers', () => {
-    // it('add list', async () => {
-    //   const res = await fetch('http://localhost:7001/register', {
-    //     method: 'post',
-    //     body: JSON.stringify({
-    //       name: 'budi',
-    //       age: 23,
-    //       bio: 'doyan makan',
-    //       address: 'Jakarta',
-    //       photo: 'worker.jpg',
-    //     }),
-    //     headers: { 'Content-type': 'application/json' },
-    //   });
-    //   const response = await res.json();
-    //   expect(response.name).toBe('budi');
-    // });
-
-    it('get list worker', async () => {
-      http.get('http://localhost:7001/list', (res) => {
-        let response = '';
-        res.on('data', (d) => {
-          response += d;
-        });
-        res.on('end', () => {
-          try {
-            const parsedData = JSON.parse(response);
-            expect(parsedData).toHaveLength(2);
-          } catch (e) {
-            console.error(e.message);
-          }
-        });
-      });
-    });
-
-    it('get info worker', async () => {
-      http.get('http://localhost:7001/info?id=4', (res) => {
-        let response = '';
-        res.on('data', (d) => {
-          response += d;
-        });
-        res.on('end', () => {
-          try {
-            const parsedData = JSON.parse(response);
-            expect(parsedData.name).toBe('Makmur');
-          } catch (e) {
-            console.error(e.message);
-          }
-        });
-      });
-    });
-
-    it('delete worker', async () => {
+  describe('worker', () => {
+    it('get worker', async () => {
       const options = {
-        method: 'DELETE',
+        hostname: 'localhost',
+        port: config.serverWorker.port,
+        path: '/list',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
       };
-      http.request('http://localhost:7001/info?id=3', options, (res) => {
+      const response = await request(options);
+      const data = JSON.parse(response);
+      expect(data).toHaveLength(0);
+    });
+
+    it('add worker', async () => {
+      const form = new FormData();
+      form.append('name', 'user 1');
+      form.append('age', 29);
+      form.append('bio', 'test');
+      form.append('address', 'jkt');
+      form.append('photo', fs.createReadStream('assets/nats.png'));
+
+      const response = await new Promise((resolve, reject) => {
+        form.submit(
+          `http://localhost:${config.serverWorker.port}/register`,
+          function (err, res) {
+            if (err) {
+              reject(err);
+            }
+            let data = '';
+            res.on('data', (chunk) => {
+              data += chunk.toString();
+            });
+            res.on('end', () => {
+              resolve(data);
+            });
+          }
+        );
+      });
+
+      const data = JSON.parse(response);
+      expect(data.name).toBe('user 1');
+    });
+    it('get info worker', async () => {
+      http.get('http://localhost:7001/info?id=4', (res) => {
         let response = '';
         res.on('data', (d) => {
           response += d;

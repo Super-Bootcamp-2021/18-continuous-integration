@@ -1,3 +1,5 @@
+/** @module WorkerService */
+
 const { getConnection } = require('typeorm');
 const { Worker } = require('./worker.model');
 const bus = require('../lib/bus');
@@ -5,6 +7,12 @@ const bus = require('../lib/bus');
 const ERROR_REGISTER_DATA_INVALID = 'data registrasi pekerja tidak lengkap';
 const ERROR_WORKER_NOT_FOUND = 'pekerja tidak ditemukan';
 
+/**
+ * add new Worker
+ * @param {WorkerData} data worker detail
+ * @returns {Promise<worker>} new worker detail with id
+ * @throws {string} when data null
+ */
 async function register(data) {
   if (!data.name || !data.age || !data.bio || !data.address || !data.photo) {
     throw ERROR_REGISTER_DATA_INVALID;
@@ -23,11 +31,21 @@ async function register(data) {
   return worker;
 }
 
+/**
+ * get list of worker
+ * @return {Promise<Worker[]>} list of worker
+ */
 function list() {
   const workerRepo = getConnection().getRepository('Worker');
   return workerRepo.find();
 }
 
+/**
+ * get information of worker
+ * @param {string} id worker id
+ * @returns {Promise<Worker>} get info worker
+ * @throws {string} when info worker not found in database
+ */
 async function info(id) {
   const workerRepo = getConnection().getRepository('Worker');
   const worker = await workerRepo.findOne(id);
@@ -37,6 +55,12 @@ async function info(id) {
   return worker;
 }
 
+/**
+ * remove a worker by id
+ * @param {string} id worker id
+ * @returns {Promise<Worker>} remove Worker
+ * @throws {string} when worker not found in database
+ */
 async function remove(id) {
   const workerRepo = getConnection().getRepository('Worker');
   const worker = await workerRepo.findOne(id);
@@ -48,11 +72,33 @@ async function remove(id) {
   return worker;
 }
 
+/**
+ * truncate database
+ * @returns {Promise<boolean>} boolean
+ */
+async function truncate() {
+  const entities = getConnection().entityMetadatas;
+
+  for (const entity of entities) {
+    const repository = await getConnection().getRepository(entity.name); // Get repository
+    try {
+      // change clear to delete for reference table issue
+
+      await repository.delete({}); // Clear each entity table's content
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+  return true;
+}
+
 module.exports = {
   register,
   list,
   remove,
   info,
+  truncate,
   ERROR_REGISTER_DATA_INVALID,
   ERROR_WORKER_NOT_FOUND,
 };

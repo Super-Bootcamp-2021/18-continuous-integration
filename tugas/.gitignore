@@ -2,3 +2,10 @@ node_modules
 .nyc_output
 *.db
 file-storage
+docs
+.tmrc
+.env
+www/*.js
+www/*.txt
+e2e/recordings
+e2e/screenshots
