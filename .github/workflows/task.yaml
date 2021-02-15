@@ -16,12 +16,12 @@ jobs:
         # Docker Hub image
         image: postgres:11
         # Provide the password for postgres
-        env:
-          POSTGRES_PASSWORD: 123456
-          POSTGRES_DB: sanbercode2
         # env:
-        #   POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-        #   POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+        #   POSTGRES_PASSWORD: 123456
+        #   POSTGRES_DB: sanbercode2
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
@@ -32,12 +32,12 @@ jobs:
           - 5432:5432
       minio:
         image: bitnami/minio:latest
-        env:
-          MINIO_ACCESS_KEY: minioadmin
-          MINIO_SECRET_KEY: minioadmin
         # env:
-        #   MINIO_ROOT_USER: ${{ secrets.MINIO_ACCESS_KEY }}
-        #   MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_SECRET_KEY }}
+        #   MINIO_ACCESS_KEY: minioadmin
+        #   MINIO_SECRET_KEY: minioadmin
+        env:
+          MINIO_ROOT_USER: ${{ secrets.MINIO_ACCESS_KEY }}
+          MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_SECRET_KEY }}
         ports:
           - 9000:9000
         options: --name minio-server
