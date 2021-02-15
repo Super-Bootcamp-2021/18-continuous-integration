@@ -23,12 +23,11 @@ const removedAction = createAction('removed');
 const workersLoadedAction = createAction('workersLoaded');
 const clearErrorAction = createAction('clearError');
 
-
 /**
  * to createReducer from action
  * @module createAction
- * @param {any} initialState default state 
- * @param {any} action all action 
+ * @param {any} initialState default state
+ * @param {any} action all action
  */
 const reducer = createReducer(initialState, {
   [errorAction]: error,
@@ -42,7 +41,7 @@ const reducer = createReducer(initialState, {
 /**
  * to store reducer
  * @module configureStore
- * @param {any} reducer 
+ * @param {any} reducer
  */
 const store$ = configureStore({
   reducer,

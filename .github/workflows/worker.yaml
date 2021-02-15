@@ -17,8 +17,11 @@ jobs:
         image: postgres:11
         # Provide the password for postgres
         env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: database
+          POSTGRES_PASSWORD: 123456
+          POSTGRES_DB: sanbercode2
+        # env:
+        #   POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        #   POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
@@ -27,6 +30,21 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
+      minio:
+        image: bitnami/minio:latest
+        env:
+          MINIO_ACCESS_KEY: minioadmin
+          MINIO_SECRET_KEY: minioadmin
+        # env:
+        #   MINIO_ROOT_USER: ${{ secrets.MINIO_ACCESS_KEY }}
+        #   MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_SECRET_KEY }}
+        ports:
+          - 9000:9000
+        options: --name minio-server
+      nats:
+        image: nats
+        ports:
+          - 4222:4222
 
     runs-on: ubuntu-latest
     defaults:
@@ -34,10 +52,10 @@ jobs:
         working-directory: ./tugas
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js 12
+    - name: Use Node.js 14
       uses: actions/setup-node@v1
       with:
-        node-version: 12
+        node-version: 14
     - name: Cache node modules
       uses: actions/cache@v2
       env:
